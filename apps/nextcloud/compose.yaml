@@ -1,0 +1,56 @@
+services:
+  workspace:
+    image: composer:2
+    working_dir: /workspace/app
+    command: sleep infinity
+    volumes:
+      - ./app:/workspace/app
+      - ../../packages/chess-core:/workspace/chess-core
+
+  db:
+    image: mariadb:11.8
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - db:/var/lib/mysql
+
+  app:
+    image: nextcloud:34-fpm
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: db
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+      NEXTCLOUD_TRUSTED_DOMAINS: localhost
+    volumes:
+      - nextcloud:/var/www/html
+      - ./app:/var/www/html/custom_apps/cloud_chess
+
+  web:
+    image: nginx:alpine
+    depends_on:
+      - app
+    ports:
+      - "8080:80"
+    volumes:
+      - nextcloud:/var/www/html:ro
+      - ./app:/var/www/html/custom_apps/cloud_chess:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  db:
+  nextcloud:

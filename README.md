@@ -34,6 +34,8 @@ docker compose run --rm php composer analyse
 
 `packages/chess-core` owns `Domain`, `Application`, `Ports`, and the incoming `Presentation/ChessApi` boundary. Concrete platform and technology adapters stay outside the package.
 
+The local Nextcloud FPM, Nginx, MariaDB, and adapter-workspace stack is documented in [apps/nextcloud/README.md](apps/nextcloud/README.md).
+
 ## Contributing
 
 The project is in planning; the core is the next implementation milestone. Once public code is available, contributions should be focused and test-first. Keep the Domain, Application, and Ports free of platform imports; API Platform belongs only in `Presentation/ChessApi`. Discuss public API, domain, or dependency changes before starting an implementation.
