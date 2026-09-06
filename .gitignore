@@ -1,0 +1,4 @@
+.worktrees/
+.env
+packages/chess-core/vendor/
+packages/chess-core/.phpunit.result.cache

@@ -7,7 +7,7 @@ Cloud Chess brings asynchronous PvP and browser-based games against Stockfish to
 ## Principles
 
 - One server-authoritative game state per multiplayer game.
-- Shared PHP core with Domain, Application, Ports, and API Platform resources.
+- Shared PHP core with Domain, Application, Ports, and the `Presentation/ChessApi` layer.
 - Nextcloud provides host integration; storage, notifications, and chess rules are adapters.
 - React, TypeScript, Vite, and Tailwind in the client.
 - Stockfish WASM runs in a browser Web Worker; the server still validates every move.
@@ -15,16 +15,30 @@ Cloud Chess brings asynchronous PvP and browser-based games against Stockfish to
 
 ```text
 cloud-chess/
-├── packages/chess-core/          # domain, ports, API Platform resources
+├── packages/chess-core/          # Domain, Application, Ports, Presentation/ChessApi
 ├── packages/chess-rules-pchess/  # chess-rules adapter
 ├── apps/nextcloud/               # first platform adapter
 ├── clients/chess-client/         # React application
 └── docs/                         # architecture and decisions
 ```
 
+## Local development
+
+Run PHP tooling inside Docker:
+
+```bash
+docker compose run --rm php composer install
+docker compose run --rm php composer test
+docker compose run --rm php composer analyse
+```
+
+`packages/chess-core` owns `Domain`, `Application`, `Ports`, and the incoming `Presentation/ChessApi` boundary. Concrete platform and technology adapters stay outside the package.
+
+The local Nextcloud FPM, Nginx, MariaDB, and adapter-workspace stack is documented in [apps/nextcloud/README.md](apps/nextcloud/README.md).
+
 ## Contributing
 
-The project is in planning; the core is the next implementation milestone. Once public code is available, contributions should be focused and test-first. Keep the Domain, Application, and Ports free of platform imports; API Platform belongs only in the shared resource layer. Discuss public API, domain, or dependency changes before starting an implementation.
+The project is in planning; the core is the next implementation milestone. Once public code is available, contributions should be focused and test-first. Keep the Domain, Application, and Ports free of platform imports; API Platform belongs only in `Presentation/ChessApi`. Discuss public API, domain, or dependency changes before starting an implementation.
 
 ## Licensing
 
