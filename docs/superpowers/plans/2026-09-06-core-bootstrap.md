@@ -6,7 +6,7 @@
 
 **Architecture:** Das Monorepo enthält ein einzelnes PHP-Paket unter `packages/chess-core`. Es definiert nur die leeren Core-Layer `Domain`, `Application`, `Ports` und `Presentation/ChessApi`; konkrete technische Adapter bleiben außerhalb. Ein einzelner PHP-CLI-Container führt Composer, PHPUnit und PHPStan aus.
 
-**Tech Stack:** PHP 8.3 CLI, Composer 2, Docker Compose, PHPUnit 11, PHPStan 1.
+**Tech Stack:** PHP 8.3 CLI, Composer 2, Docker Compose, PHPUnit 11, PHPStan 2.
 
 **Spec:** `docs/superpowers/specs/2026-09-06-core-bootstrap-design.md`
 
@@ -94,7 +94,7 @@ git commit -m "chore: add PHP development container"
   "type": "library",
   "require": { "php": "^8.3" },
   "require-dev": {
-    "phpstan/phpstan": "^1.12",
+    "phpstan/phpstan": "^2.2",
     "phpunit/phpunit": "^11.0"
   },
   "autoload": { "psr-4": { "CloudChess\\Core\\": "src/" } },
@@ -155,9 +155,9 @@ use PHPUnit\\Framework\\TestCase;
 
 final class SmokeTest extends TestCase
 {
-    public function test_test_environment_is_available(): void
+    public function test_php_83_runtime_is_available(): void
     {
-        self::assertTrue(true);
+        self::assertTrue(function_exists('json_validate'));
     }
 }
 ```

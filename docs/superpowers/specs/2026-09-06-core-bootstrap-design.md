@@ -38,9 +38,9 @@ Es gibt bewusst keine Datenbank, Nextcloud-Instanz, HTTP-Laufzeit oder langlebig
 - PHP 8.3 als festgelegte Entwicklungsbasis.
 - Composer mit PSR-4-Autoloading für `CloudChess\\Core\\`.
 - PHPUnit für Domain- und Application-Tests.
-- PHPStan auf Level 8 für `src/` und `tests/`.
+- PHPStan 2 auf Level 8 für `src/` und `tests/`.
 
-Ein minimaler Smoke-Test beweist die PHPUnit-Verdrahtung. Er testet einen namenlosen, lokal im Test definierten Wert und führt keinerlei Produktionsverhalten ein. PHPStan prüft dieselben Quellen.
+Ein minimaler Smoke-Test beweist die PHPUnit-Verdrahtung und die festgelegte PHP-8.3-Laufzeit: Er prüft die mit PHP 8.3 eingeführte Funktion `json_validate()`. PHPStan prüft dieselben Quellen.
 
 ## Abnahmekriterien
 
