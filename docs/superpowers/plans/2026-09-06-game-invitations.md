@@ -6,7 +6,7 @@
 
 **Architecture:** `GameInvitation` und `Game` bleiben getrennte Aggregate im Domain-Layer. Application-Use-Cases koordinieren sie über Ports und eine Transaktionsgrenze. In-Memory-Adapter beweisen den Ablauf, ohne Nextcloud, Datenbank, API Platform oder Schachregeln einzubinden.
 
-**Tech Stack:** PHP 8.3, PHPUnit 11, PHPStan 2.
+**Tech Stack:** PHP 8.3, PHPUnit 12.5, PHPStan 2.2.
 
 **Spec:** `docs/superpowers/specs/2026-09-06-game-invitations-design.md`
 
