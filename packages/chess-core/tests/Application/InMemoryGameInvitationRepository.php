@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace CloudChess\Core\Tests\Application;
+
+use CloudChess\Core\Domain\GameInvitation;
+use CloudChess\Core\Domain\GameInvitationId;
+use CloudChess\Core\Domain\InvitationStatus;
+use CloudChess\Core\Domain\PlayerId;
+use CloudChess\Core\Ports\GameInvitationRepository;
+use RuntimeException;
+
+final class InMemoryGameInvitationRepository implements GameInvitationRepository
+{
+    /** @var array<string, GameInvitation> */
+    private array $invitations = [];
+
+    public function get(GameInvitationId $id): GameInvitation
+    {
+        return $this->invitations[$id->toString()] ?? throw new RuntimeException('Invitation not found.');
+    }
+
+    public function save(GameInvitation $invitation): void
+    {
+        $this->invitations[$invitation->id()->toString()] = $invitation;
+    }
+
+    public function hasPending(PlayerId $challenger, PlayerId $opponent): bool
+    {
+        foreach ($this->invitations as $invitation) {
+            if (
+                $invitation->status() === InvitationStatus::PENDING
+                && $invitation->challengerId()->toString() === $challenger->toString()
+                && $invitation->opponentId()->toString() === $opponent->toString()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
