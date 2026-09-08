@@ -7,6 +7,7 @@ namespace CloudChess\Core\Ports;
 use CloudChess\Core\Domain\GameInvitation;
 use CloudChess\Core\Domain\GameInvitationId;
 use CloudChess\Core\Domain\PlayerId;
+use DateTimeImmutable;
 
 interface GameInvitationRepository
 {
@@ -14,5 +15,5 @@ interface GameInvitationRepository
 
     public function save(GameInvitation $invitation): void;
 
-    public function hasPending(PlayerId $challenger, PlayerId $opponent): bool;
+    public function hasPending(PlayerId $challenger, PlayerId $opponent, DateTimeImmutable $now): bool;
 }

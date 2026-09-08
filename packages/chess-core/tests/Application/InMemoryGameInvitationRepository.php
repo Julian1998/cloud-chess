@@ -6,9 +6,9 @@ namespace CloudChess\Core\Tests\Application;
 
 use CloudChess\Core\Domain\GameInvitation;
 use CloudChess\Core\Domain\GameInvitationId;
-use CloudChess\Core\Domain\InvitationStatus;
 use CloudChess\Core\Domain\PlayerId;
 use CloudChess\Core\Ports\GameInvitationRepository;
+use DateTimeImmutable;
 use RuntimeException;
 
 final class InMemoryGameInvitationRepository implements GameInvitationRepository
@@ -26,11 +26,13 @@ final class InMemoryGameInvitationRepository implements GameInvitationRepository
         $this->invitations[$invitation->id()->toString()] = $invitation;
     }
 
-    public function hasPending(PlayerId $challenger, PlayerId $opponent): bool
+    public function hasPending(PlayerId $challenger, PlayerId $opponent, DateTimeImmutable $now): bool
     {
         foreach ($this->invitations as $invitation) {
+            $invitation->expireIfDue($now);
+
             if (
-                $invitation->status() === InvitationStatus::PENDING
+                $invitation->isPending()
                 && $invitation->challengerId()->toString() === $challenger->toString()
                 && $invitation->opponentId()->toString() === $opponent->toString()
             ) {

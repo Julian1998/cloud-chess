@@ -84,6 +84,11 @@ final class GameInvitation
         return $this->status;
     }
 
+    public function isPending(): bool
+    {
+        return $this->status === InvitationStatus::PENDING;
+    }
+
     public function expiresAt(): DateTimeImmutable
     {
         return $this->expiresAt;

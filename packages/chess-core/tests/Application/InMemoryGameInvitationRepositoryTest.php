@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CloudChess\Core\Tests\Application;
 
 use CloudChess\Core\Tests\Domain\InvitationFixture;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 final class InMemoryGameInvitationRepositoryTest extends TestCase
@@ -24,7 +25,9 @@ final class InMemoryGameInvitationRepositoryTest extends TestCase
         $repository = new InMemoryGameInvitationRepository();
         $repository->save(InvitationFixture::pending());
 
-        self::assertTrue($repository->hasPending(InvitationFixture::challenger(), InvitationFixture::opponent()));
-        self::assertFalse($repository->hasPending(InvitationFixture::opponent(), InvitationFixture::challenger()));
+        $now = new DateTimeImmutable('2026-09-08T12:00:00+00:00');
+
+        self::assertTrue($repository->hasPending(InvitationFixture::challenger(), InvitationFixture::opponent(), $now));
+        self::assertFalse($repository->hasPending(InvitationFixture::opponent(), InvitationFixture::challenger(), $now));
     }
 }

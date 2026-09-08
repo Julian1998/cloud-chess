@@ -38,6 +38,7 @@ final class GameInvitationTest extends TestCase
         $invitation->accept(InvitationFixture::opponent(), new DateTimeImmutable('2026-09-08T12:00:00+00:00'));
 
         self::assertSame(InvitationStatus::ACCEPTED, $invitation->status());
+        self::assertFalse($invitation->isPending());
     }
 
     public function test_only_recipient_can_accept_an_invitation(): void
@@ -98,5 +99,10 @@ final class GameInvitationTest extends TestCase
         $invitation->expireIfDue(new DateTimeImmutable('2026-09-15T10:00:00+00:00'));
 
         self::assertSame(InvitationStatus::EXPIRED, $invitation->status());
+    }
+
+    public function test_new_invitation_is_pending(): void
+    {
+        self::assertTrue(InvitationFixture::pending()->isPending());
     }
 }
