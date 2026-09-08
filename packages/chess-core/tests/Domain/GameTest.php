@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Tests\Domain;
 
-use CloudChess\Core\Domain\Game;
-use CloudChess\Core\Domain\GameId;
-use CloudChess\Core\Domain\PlayerAssignment;
-use CloudChess\Core\Domain\PlayerId;
-use CloudChess\Core\Domain\TurnDuration;
+use CloudChess\Core\Domain\Aggregate\Game;
+use CloudChess\Core\Domain\Enum\TurnDuration;
+use CloudChess\Core\Domain\ValueObject\GameId;
+use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 use DateTimeImmutable;
 use DomainException;
 use PHPUnit\Framework\TestCase;

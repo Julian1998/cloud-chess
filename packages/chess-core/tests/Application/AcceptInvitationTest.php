@@ -6,11 +6,11 @@ namespace CloudChess\Core\Tests\Application;
 
 use CloudChess\Core\Application\AcceptInvitation;
 use CloudChess\Core\Application\AcceptInvitationCommand;
-use CloudChess\Core\Domain\GameId;
-use CloudChess\Core\Domain\InvitationStateException;
-use CloudChess\Core\Domain\InvitationStatus;
-use CloudChess\Core\Domain\PlayerAssignment;
-use CloudChess\Core\Domain\PlayerId;
+use CloudChess\Core\Domain\Enum\InvitationStatus;
+use CloudChess\Core\Domain\Exception\InvitationStateException;
+use CloudChess\Core\Domain\ValueObject\GameId;
+use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 use CloudChess\Core\Tests\Domain\InvitationFixture;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;

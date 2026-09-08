@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Ports;
 
-use CloudChess\Core\Domain\Game;
+use CloudChess\Core\Domain\Aggregate\Game;
 
 interface GameRepository
 {

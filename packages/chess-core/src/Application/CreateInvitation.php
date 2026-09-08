@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Application;
 
-use CloudChess\Core\Domain\GameInvitation;
+use CloudChess\Core\Domain\Aggregate\GameInvitation;
 use CloudChess\Core\Ports\Clock;
 use CloudChess\Core\Ports\GameInvitationRepository;
 

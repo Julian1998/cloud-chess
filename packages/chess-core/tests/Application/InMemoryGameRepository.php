@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Tests\Application;
 
-use CloudChess\Core\Domain\Game;
-use CloudChess\Core\Domain\GameId;
+use CloudChess\Core\Domain\Aggregate\Game;
+use CloudChess\Core\Domain\ValueObject\GameId;
 use CloudChess\Core\Ports\GameRepository;
 use RuntimeException;
 

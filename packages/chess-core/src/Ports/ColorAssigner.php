@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Ports;
 
-use CloudChess\Core\Domain\ColorPreference;
-use CloudChess\Core\Domain\PlayerAssignment;
-use CloudChess\Core\Domain\PlayerId;
+use CloudChess\Core\Domain\Enum\ColorPreference;
+use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 
 interface ColorAssigner
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace CloudChess\Core\Domain;
+namespace CloudChess\Core\Domain\ValueObject;
 
 use InvalidArgumentException;
 
-final readonly class GameInvitationId
+final readonly class PlayerId
 {
     private function __construct(private string $value)
     {
@@ -15,7 +15,7 @@ final readonly class GameInvitationId
     public static function fromString(string $value): self
     {
         if ($value === '') {
-            throw new InvalidArgumentException('Game invitation ID must not be empty.');
+            throw new InvalidArgumentException('Player ID must not be empty.');
         }
 
         return new self($value);

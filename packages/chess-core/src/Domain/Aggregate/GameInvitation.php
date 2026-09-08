@@ -2,10 +2,16 @@
 
 declare(strict_types=1);
 
-namespace CloudChess\Core\Domain;
+namespace CloudChess\Core\Domain\Aggregate;
 
 use DateInterval;
 use DateTimeImmutable;
+use CloudChess\Core\Domain\Enum\ColorPreference;
+use CloudChess\Core\Domain\Enum\InvitationStatus;
+use CloudChess\Core\Domain\Enum\TurnDuration;
+use CloudChess\Core\Domain\Exception\InvitationStateException;
+use CloudChess\Core\Domain\ValueObject\GameInvitationId;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 
 final class GameInvitation
 {

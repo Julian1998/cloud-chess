@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Tests\Domain;
 
-use CloudChess\Core\Domain\GameId;
-use CloudChess\Core\Domain\GameInvitationId;
-use CloudChess\Core\Domain\PlayerId;
+use CloudChess\Core\Domain\ValueObject\GameId;
+use CloudChess\Core\Domain\ValueObject\GameInvitationId;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

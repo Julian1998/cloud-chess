@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Application;
 
-use CloudChess\Core\Domain\GameId;
-use CloudChess\Core\Domain\GameInvitationId;
-use CloudChess\Core\Domain\PlayerId;
+use CloudChess\Core\Domain\ValueObject\GameId;
+use CloudChess\Core\Domain\ValueObject\GameInvitationId;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 
 final readonly class AcceptInvitationCommand
 {

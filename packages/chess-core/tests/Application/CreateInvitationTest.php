@@ -7,11 +7,11 @@ namespace CloudChess\Core\Tests\Application;
 use CloudChess\Core\Application\CreateInvitation;
 use CloudChess\Core\Application\CreateInvitationCommand;
 use CloudChess\Core\Application\DuplicatePendingInvitation;
-use CloudChess\Core\Domain\ColorPreference;
-use CloudChess\Core\Domain\GameInvitationId;
-use CloudChess\Core\Domain\InvitationStatus;
-use CloudChess\Core\Domain\PlayerId;
-use CloudChess\Core\Domain\TurnDuration;
+use CloudChess\Core\Domain\Enum\ColorPreference;
+use CloudChess\Core\Domain\Enum\InvitationStatus;
+use CloudChess\Core\Domain\Enum\TurnDuration;
+use CloudChess\Core\Domain\ValueObject\GameInvitationId;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 

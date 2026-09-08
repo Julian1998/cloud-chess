@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Application;
 
-use CloudChess\Core\Domain\ColorPreference;
-use CloudChess\Core\Domain\GameInvitationId;
-use CloudChess\Core\Domain\PlayerId;
-use CloudChess\Core\Domain\TurnDuration;
+use CloudChess\Core\Domain\Enum\ColorPreference;
+use CloudChess\Core\Domain\Enum\TurnDuration;
+use CloudChess\Core\Domain\ValueObject\GameInvitationId;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 
 final readonly class CreateInvitationCommand
 {

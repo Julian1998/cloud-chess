@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Tests\Domain;
 
-use CloudChess\Core\Domain\TurnDuration;
+use CloudChess\Core\Domain\Enum\TurnDuration;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 

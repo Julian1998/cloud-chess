@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
-namespace CloudChess\Core\Domain;
+namespace CloudChess\Core\Domain\Aggregate;
 
 use DateTimeImmutable;
+use CloudChess\Core\Domain\Enum\TurnDuration;
+use CloudChess\Core\Domain\ValueObject\GameId;
+use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 
 final readonly class Game
 {

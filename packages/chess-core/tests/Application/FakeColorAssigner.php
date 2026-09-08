@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Tests\Application;
 
-use CloudChess\Core\Domain\ColorPreference;
-use CloudChess\Core\Domain\PlayerAssignment;
-use CloudChess\Core\Domain\PlayerId;
+use CloudChess\Core\Domain\Enum\ColorPreference;
+use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 use CloudChess\Core\Ports\ColorAssigner;
 
 final readonly class FakeColorAssigner implements ColorAssigner

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Tests\Domain;
 
-use CloudChess\Core\Domain\ColorPreference;
+use CloudChess\Core\Domain\Enum\ColorPreference;
 use PHPUnit\Framework\TestCase;
 
 final class ColorPreferenceTest extends TestCase

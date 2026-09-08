@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Application;
 
-use CloudChess\Core\Domain\Game;
-use CloudChess\Core\Domain\GameInvitation;
-use CloudChess\Core\Domain\PlayerAssignment;
+use CloudChess\Core\Domain\Aggregate\Game;
+use CloudChess\Core\Domain\Aggregate\GameInvitation;
+use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
 use CloudChess\Core\Ports\Clock;
 use CloudChess\Core\Ports\ColorAssigner;
 use CloudChess\Core\Ports\GameInvitationRepository;

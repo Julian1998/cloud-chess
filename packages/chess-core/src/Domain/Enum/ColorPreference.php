@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CloudChess\Core\Domain;
+namespace CloudChess\Core\Domain\Enum;
 
 enum ColorPreference: string
 {

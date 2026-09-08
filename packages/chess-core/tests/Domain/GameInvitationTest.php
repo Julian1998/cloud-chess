@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Tests\Domain;
 
-use CloudChess\Core\Domain\InvitationStateException;
-use CloudChess\Core\Domain\InvitationStatus;
-use CloudChess\Core\Domain\PlayerId;
+use CloudChess\Core\Domain\Enum\InvitationStatus;
+use CloudChess\Core\Domain\Exception\InvitationStateException;
+use CloudChess\Core\Domain\ValueObject\PlayerId;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
