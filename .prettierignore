@@ -1,0 +1,7 @@
+**/vendor/
+**/node_modules/
+apps/nextcloud/app/js/
+apps/nextcloud/app/css/
+build/
+**/composer.lock
+**/pnpm-lock.yaml

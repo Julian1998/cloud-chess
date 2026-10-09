@@ -10,7 +10,6 @@ use CloudChess\Core\Domain\Enum\InvitationStatus;
 use CloudChess\Core\Domain\Exception\InvitationStateException;
 use CloudChess\Core\Domain\ValueObject\GameId;
 use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
-use CloudChess\Core\Domain\ValueObject\PlayerId;
 use CloudChess\Core\Tests\Domain\InvitationFixture;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace CloudChess\Core\Domain\Aggregate;
 
-use DateInterval;
-use DateTimeImmutable;
 use CloudChess\Core\Domain\Enum\ColorPreference;
 use CloudChess\Core\Domain\Enum\InvitationStatus;
 use CloudChess\Core\Domain\Enum\TurnDuration;
 use CloudChess\Core\Domain\Exception\InvitationStateException;
 use CloudChess\Core\Domain\ValueObject\GameInvitationId;
 use CloudChess\Core\Domain\ValueObject\PlayerId;
+use DateInterval;
+use DateTimeImmutable;
 
 final class GameInvitation
 {
@@ -39,10 +39,41 @@ final class GameInvitation
         DateTimeImmutable $createdAt,
     ): self {
         if ($challengerId->toString() === $opponentId->toString()) {
-            throw new InvitationStateException('Challenger and opponent must differ.');
+            throw new InvitationStateException(
+                'Challenger and opponent must differ.',
+            );
         }
 
-        return new self($id, $challengerId, $opponentId, $colorPreference, $turnDuration, $createdAt);
+        return new self(
+            $id,
+            $challengerId,
+            $opponentId,
+            $colorPreference,
+            $turnDuration,
+            $createdAt,
+        );
+    }
+
+    public static function restore(
+        GameInvitationId $id,
+        PlayerId $challengerId,
+        PlayerId $opponentId,
+        ColorPreference $colorPreference,
+        TurnDuration $turnDuration,
+        DateTimeImmutable $createdAt,
+        InvitationStatus $status,
+    ): self {
+        $invitation = self::create(
+            $id,
+            $challengerId,
+            $opponentId,
+            $colorPreference,
+            $turnDuration,
+            $createdAt,
+        );
+        $invitation->status = $status;
+
+        return $invitation;
     }
 
     public function accept(PlayerId $actor, DateTimeImmutable $now): void
@@ -50,7 +81,9 @@ final class GameInvitation
         $this->ensurePending($now);
 
         if ($actor->toString() !== $this->opponentId->toString()) {
-            throw new InvitationStateException('Only the opponent can accept an invitation.');
+            throw new InvitationStateException(
+                'Only the opponent can accept an invitation.',
+            );
         }
 
         $this->status = InvitationStatus::ACCEPTED;
@@ -61,7 +94,9 @@ final class GameInvitation
         $this->ensurePending($now);
 
         if ($actor->toString() !== $this->opponentId->toString()) {
-            throw new InvitationStateException('Only the opponent can decline an invitation.');
+            throw new InvitationStateException(
+                'Only the opponent can decline an invitation.',
+            );
         }
 
         $this->status = InvitationStatus::DECLINED;
@@ -72,7 +107,9 @@ final class GameInvitation
         $this->ensurePending($now);
 
         if ($actor->toString() !== $this->challengerId->toString()) {
-            throw new InvitationStateException('Only the challenger can cancel an invitation.');
+            throw new InvitationStateException(
+                'Only the challenger can cancel an invitation.',
+            );
         }
 
         $this->status = InvitationStatus::CANCELLED;
@@ -80,7 +117,10 @@ final class GameInvitation
 
     public function expireIfDue(DateTimeImmutable $now): void
     {
-        if ($this->status === InvitationStatus::PENDING && $now >= $this->expiresAt) {
+        if (
+            $this->status === InvitationStatus::PENDING &&
+            $now >= $this->expiresAt
+        ) {
             $this->status = InvitationStatus::EXPIRED;
         }
     }
@@ -98,6 +138,11 @@ final class GameInvitation
     public function expiresAt(): DateTimeImmutable
     {
         return $this->expiresAt;
+    }
+
+    public function createdAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function id(): GameInvitationId
@@ -130,7 +175,9 @@ final class GameInvitation
         $this->expireIfDue($now);
 
         if ($this->status !== InvitationStatus::PENDING) {
-            throw new InvitationStateException('Only pending invitations can change state.');
+            throw new InvitationStateException(
+                'Only pending invitations can change state.',
+            );
         }
     }
 }

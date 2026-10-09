@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap-http.php" cacheResult="false" failOnWarning="true" failOnRisky="true">
+    <testsuites>
+        <testsuite name="HTTP">
+            <directory>Http</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
