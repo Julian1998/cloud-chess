@@ -4,7 +4,7 @@ Cloud Chess 0.1.0 runs on the local Nextcloud 34 stack with Nginx, FPM and Maria
 
 ## First install
 
-Prerequisites: Docker with Compose and GNU Make.
+Prerequisites: Docker with Compose and GNU Make. Frontend commands run in Node 24 containers using Corepack and the pnpm version pinned in `package.json`; a host Node.js installation is not required.
 
 From the repository root:
 
@@ -18,6 +18,8 @@ The copy is only needed when `.env` does not exist. Build commands package the c
 Open <http://localhost:8080/index.php/apps/cloud_chess/> and sign in using the development account configured in `.env`. HTTP is bound to localhost. This stack and its example credentials are for local development.
 
 For iterative development, run `make nextcloud-build` and reload the app page. Vite's manifest supplies hashed asset URLs, so updated JavaScript and CSS do not require enabling Nextcloud debug mode. React source and tests live in `apps/nextcloud/app/frontend/`; PHP classes remain in `lib/`, following Nextcloud's app conventions. Compiled modules and styles live in `js/`.
+
+Frontend dependencies are locked in `pnpm-lock.yaml`. Build and check commands use `pnpm install --frozen-lockfile`. `pnpm-workspace.yaml` permits esbuild's required installation script.
 
 The generated `js/` directory, including the Vite manifest, is ignored by Git. A fresh checkout requires `make nextcloud-build` before the app can run. `make nextcloud-install` and `make nextcloud-package` include this build automatically; the installable package contains the compiled assets.
 

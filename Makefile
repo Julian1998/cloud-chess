@@ -27,10 +27,10 @@ nextcloud-logs:
 .PHONY: client-build client-check nextcloud-build nextcloud-install nextcloud-test nextcloud-test-http nextcloud-package
 
 client-build:
-	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'npm ci && npm run typecheck && npm run build'
+	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'corepack enable && pnpm install --frozen-lockfile && pnpm run typecheck && pnpm run build'
 
 client-check:
-	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'npm ci && npm test && npm run typecheck && npm run build'
+	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'corepack enable && pnpm install --frozen-lockfile && pnpm test && pnpm run typecheck && pnpm run build'
 
 nextcloud-build: client-build
 	$(NEXTCLOUD_COMPOSE) run --rm --no-deps workspace composer install --no-dev --no-interaction
@@ -49,14 +49,14 @@ nextcloud-test-http:
 
 nextcloud-package: nextcloud-build
 	mkdir -p build
-	tar --exclude='./frontend' --exclude='./node_modules' --exclude='./package.json' --exclude='./package-lock.json' --exclude='./tsconfig.json' --exclude='./vite.config.ts' --exclude='./tests' --exclude='./vendor/cloud-chess/chess-core/vendor' --exclude='./vendor/cloud-chess/chess-core/tests' --exclude='./vendor/cloud-chess/chess-core/.phpunit*' --exclude='./.gitkeep' --exclude='./.gitignore' --transform='s,^\.,cloud_chess,' -czf build/cloud_chess.tar.gz -C apps/nextcloud/app .
+	tar --exclude='./frontend' --exclude='./node_modules' --exclude='./package.json' --exclude='./pnpm-lock.yaml' --exclude='./pnpm-workspace.yaml' --exclude='./tsconfig.json' --exclude='./vite.config.ts' --exclude='./tests' --exclude='./vendor/cloud-chess/chess-core/vendor' --exclude='./vendor/cloud-chess/chess-core/tests' --exclude='./vendor/cloud-chess/chess-core/.phpunit*' --exclude='./.gitkeep' --exclude='./.gitignore' --transform='s,^\.,cloud_chess,' -czf build/cloud_chess.tar.gz -C apps/nextcloud/app .
 
 .PHONY: format format-check
 
 format:
 	docker compose run --rm php composer format
-	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'npm ci && npm run format'
+	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'corepack enable && pnpm install --frozen-lockfile && pnpm run format'
 
 format-check:
 	docker compose run --rm php composer format:check
-	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'npm ci && npm run format:check'
+	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'corepack enable && pnpm install --frozen-lockfile && pnpm run format:check'

@@ -4,4 +4,4 @@ apps/nextcloud/app/js/
 apps/nextcloud/app/css/
 build/
 **/composer.lock
-**/package-lock.json
+**/pnpm-lock.yaml

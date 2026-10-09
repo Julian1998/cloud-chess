@@ -13,7 +13,7 @@ Notifications are published after commit and removed after resolution. Obsolete/
 ## Verification evidence
 
 - Core: 35 PHPUnit tests, 62 assertions; PHPStan checks 38 files without errors.
-- Nextcloud React frontend: eleven tests covering API requests, invitation actions, original search terms, stale responses, host configuration and the error boundary; TypeScript check and Vite production build pass; npm audit reports zero vulnerabilities in the locked dependencies.
+- Nextcloud React frontend: eleven tests covering API requests, invitation actions, original search terms, stale responses, host configuration and the error boundary; TypeScript check and Vite production build pass with pnpm 12.10.1; pnpm audit reports no known vulnerabilities in the locked dependencies.
 - Real Nextcloud/MariaDB integration: creation, listing, duplicate rejection, third-user isolation, acceptance/replay, decline, restoration, forced rollback, expiry, restricted user discovery and notification persistence/removal.
 - Concurrent create and accept requests each commit once; the competing request receives a conflict.
 - HTTP checks: real login, CSRF rejection, invalid inputs, actor spoofing rejection, foreign-user denial, duplicate/replayed actions.

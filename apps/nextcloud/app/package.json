@@ -3,12 +3,13 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@12.10.1",
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "build": "vite build",
-    "format": "prettier --write \"frontend/**/*.{ts,tsx,css}\" \"*.{ts,json}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\"",
-    "format:check": "prettier --check \"frontend/**/*.{ts,tsx,css}\" \"*.{ts,json}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\""
+    "format": "prettier --ignore-path ../../../.prettierignore --write \"frontend/**/*.{ts,tsx,css}\" \"*.{ts,json,yaml}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\"",
+    "format:check": "prettier --ignore-path ../../../.prettierignore --check \"frontend/**/*.{ts,tsx,css}\" \"*.{ts,json,yaml}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\""
   },
   "dependencies": {
     "react": "^19.1.1",

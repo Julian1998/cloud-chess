@@ -9,3 +9,4 @@ packages/chess-core/.phpunit.result.cache
 
 /.php-cs-fixer.php
 /docs/superpowers/plans/
+/.pnpm-store/
