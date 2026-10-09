@@ -1,0 +1,24 @@
+{
+  "name": "cloud-chess/nextcloud",
+  "description": "Cloud Chess Nextcloud adapter",
+  "type": "project",
+  "license": "AGPL-3.0-or-later",
+  "require": {
+    "php": "^8.3",
+    "cloud-chess/chess-core": "@dev"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "/workspace/chess-core",
+      "options": {
+        "symlink": false
+      }
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "OCA\\CloudChess\\": "lib/"
+    }
+  }
+}

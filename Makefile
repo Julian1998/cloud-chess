@@ -23,3 +23,36 @@ nextcloud-recreate:
 
 nextcloud-logs:
 	$(NEXTCLOUD_COMPOSE) logs -f app web db
+
+.PHONY: client-build client-check nextcloud-build nextcloud-install nextcloud-test nextcloud-package
+
+client-build:
+	docker run --rm -v "$(CURDIR):/app" -w /app/clients/chess-client node:24-alpine sh -c 'npm ci && npm run typecheck && npm run build'
+
+client-check:
+	docker run --rm -v "$(CURDIR):/app" -w /app/clients/chess-client node:24-alpine sh -c 'npm ci && npm test && npm run typecheck && npm run build'
+
+nextcloud-build: client-build
+	$(NEXTCLOUD_COMPOSE) run --rm --no-deps workspace composer install --no-dev --no-interaction
+	$(NEXTCLOUD_COMPOSE) run --rm --no-deps workspace composer reinstall cloud-chess/chess-core --no-interaction
+
+nextcloud-install: nextcloud-up nextcloud-build
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php occ app:enable cloud_chess
+
+nextcloud-test:
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/cloud_chess/tests/integration.php
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/cloud_chess/tests/concurrency.php
+
+nextcloud-package: nextcloud-build
+	mkdir -p build
+	tar --exclude='./tests' --exclude='./vendor/cloud-chess/chess-core/vendor' --exclude='./vendor/cloud-chess/chess-core/tests' --exclude='./vendor/cloud-chess/chess-core/.phpunit*' --exclude='./.gitkeep' --exclude='./.gitignore' --transform='s,^\.,cloud_chess,' -czf build/cloud_chess.tar.gz -C apps/nextcloud/app .
+
+.PHONY: format format-check
+
+format:
+	docker compose run --rm php composer format
+	docker run --rm -v "$(CURDIR):/app" -w /app/clients/chess-client node:24-alpine sh -c 'npm ci && npm run format'
+
+format-check:
+	docker compose run --rm php composer format:check
+	docker run --rm -v "$(CURDIR):/app" -w /app/clients/chess-client node:24-alpine sh -c 'npm ci && npm run format:check'

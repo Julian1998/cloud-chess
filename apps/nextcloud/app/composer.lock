@@ -1,0 +1,63 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "bde3fd80f16a59b33e360add17bd62ec",
+    "packages": [
+        {
+            "name": "cloud-chess/chess-core",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "/workspace/chess-core",
+                "reference": "70794ecaa00a969b19bc5e3057d6253aa4e7df34"
+            },
+            "require": {
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CloudChess\\Core\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "CloudChess\\Core\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit --configuration=phpunit.xml"
+                ],
+                "analyse": [
+                    "phpstan analyse --configuration=phpstan.neon"
+                ]
+            },
+            "description": "Portable application core for Cloud Chess.",
+            "transport-options": {
+                "symlink": false,
+                "relative": false
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "cloud-chess/chess-core": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^8.3"
+    },
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
+}

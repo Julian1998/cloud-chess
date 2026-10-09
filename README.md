@@ -7,7 +7,8 @@ Cloud Chess brings asynchronous PvP and browser-based games against Stockfish to
 ## Principles
 
 - One server-authoritative game state per multiplayer game.
-- Shared PHP core with Domain, Application, Ports, and the `Presentation/ChessApi` layer.
+- Shared PHP core with Domain, Application and Ports; platform adapters call its use cases directly in PHP.
+- No API Platform or separate HTTP API package is planned for the current scope.
 - Nextcloud provides host integration; storage, notifications, and chess rules are adapters.
 - React, TypeScript, Vite, and Tailwind in the client.
 - Stockfish WASM runs in a browser Web Worker; the server still validates every move.
@@ -15,7 +16,7 @@ Cloud Chess brings asynchronous PvP and browser-based games against Stockfish to
 
 ```text
 cloud-chess/
-├── packages/chess-core/          # Domain, Application, Ports, Presentation/ChessApi
+├── packages/chess-core/          # Domain, Application, Ports
 ├── packages/chess-rules-pchess/  # chess-rules adapter
 ├── apps/nextcloud/               # first platform adapter
 ├── clients/chess-client/         # React application
@@ -32,13 +33,17 @@ docker compose run --rm php composer test
 docker compose run --rm php composer analyse
 ```
 
-`packages/chess-core` owns `Domain`, `Application`, `Ports`, and the incoming `Presentation/ChessApi` boundary. Concrete platform and technology adapters stay outside the package.
+`packages/chess-core` owns `Domain`, `Application` and `Ports`. Nextcloud controllers call core use cases directly in-process; there is no HTTP connection between Nextcloud and the core. Concrete platform and technology adapters stay outside the package. A separate HTTP API package is deferred unless a concrete consumer requires it.
+
+Build and install the local Nextcloud app with `make nextcloud-install` after creating `apps/nextcloud/.env` from its example. Open <http://localhost:8080/index.php/apps/cloud_chess/>. Run `make nextcloud-test` for database/notification integration and concurrency checks, and `make client-check` for frontend checks.
 
 The local Nextcloud FPM, Nginx, MariaDB, and adapter-workspace stack is documented in [apps/nextcloud/README.md](apps/nextcloud/README.md).
 
+Use `make format` to format PHP, TypeScript and CSS; `make format-check` verifies the style without changing files. PHP uses PSR-12 through PHP CS Fixer, and the client uses Prettier. Install core development dependencies first with `make core-install`.
+
 ## Contributing
 
-The project is in planning; the core is the next implementation milestone. Once public code is available, contributions should be focused and test-first. Keep the Domain, Application, and Ports free of platform imports; API Platform belongs only in `Presentation/ChessApi`. Discuss public API, domain, or dependency changes before starting an implementation.
+The first Nextcloud milestone is implemented: multiple users can send invitations and accept or decline them in Cloud Chess or through native Nextcloud notifications. Invitations and newly created game records persist in the database. A playable chessboard is the next milestone. Contributions should be focused and test-first. Keep the Domain, Application, and Ports free of platform imports; Neither `chess-core` nor the Nextcloud adapter uses API Platform; introducing a separate API package requires a concrete use case. Discuss public API, domain, or dependency changes before starting an implementation.
 
 ## Licensing
 
@@ -52,5 +57,7 @@ See [LICENSES.md](LICENSES.md) for the package-level declaration.
 
 ## Further reading
 
-- [Architecture and work packages](outputs/2026-09-05-nextcloud-chess-design.md)
-- [TDD acceptance criteria](outputs/2026-09-05-chess-tdd-abnahme.md)
+- [Current implementation status](docs/status.md)
+- [Architecture](docs/architecture.md)
+
+The original architecture and TDD acceptance documents referenced under `outputs/` are not present in this checkout.
