@@ -17,7 +17,7 @@ The copy is only needed when `.env` does not exist. Build commands package the c
 
 Open <http://localhost:8080/index.php/apps/cloud_chess/> and sign in using the development account configured in `.env`. HTTP is bound to localhost. This stack and its example credentials are for local development.
 
-For iterative development, run `make nextcloud-build` and reload the app page. Vite's manifest supplies hashed asset URLs, so updated JavaScript and CSS do not require enabling Nextcloud debug mode. Frontend source, package configuration and tests live in `apps/nextcloud/app`; compiled modules and styles live in its `js/` directory.
+For iterative development, run `make nextcloud-build` and reload the app page. Vite's manifest supplies hashed asset URLs, so updated JavaScript and CSS do not require enabling Nextcloud debug mode. React source and tests live in `apps/nextcloud/app/frontend/`; PHP classes remain in `lib/`, following Nextcloud's app conventions. Compiled modules and styles live in `js/`.
 
 The generated `js/` directory, including the Vite manifest, is ignored by Git. A fresh checkout requires `make nextcloud-build` before the app can run. `make nextcloud-install` and `make nextcloud-package` include this build automatically; the installable package contains the compiled assets.
 

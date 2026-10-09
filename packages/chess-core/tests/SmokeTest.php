@@ -6,6 +6,8 @@ namespace CloudChess\Core\Tests;
 
 use PHPUnit\Framework\TestCase;
 
+use function function_exists;
+
 final class SmokeTest extends TestCase
 {
     public function test_php_83_runtime_is_available(): void

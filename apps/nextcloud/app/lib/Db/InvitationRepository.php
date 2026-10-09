@@ -16,6 +16,8 @@ use OCA\CloudChess\Service\InvitationNotFound;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 
+use function array_map;
+
 final class InvitationRepository implements GameInvitationRepository
 {
     public function __construct(private IDBConnection $db)
@@ -31,6 +33,7 @@ final class InvitationRepository implements GameInvitationRepository
             ->where($query->expr()->eq('id', $query->createNamedParameter($id->toString())))
             ->executeQuery()
             ->fetchAssociative();
+
         if ($row === false) {
             throw new InvitationNotFound();
         }

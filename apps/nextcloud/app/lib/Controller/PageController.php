@@ -10,6 +10,12 @@ use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
+use OCP\Util;
+
+use function array_map;
+use function file_get_contents;
+use function json_decode;
+use function pathinfo;
 
 final class PageController extends Controller
 {
@@ -28,8 +34,8 @@ final class PageController extends Controller
             512,
             JSON_THROW_ON_ERROR,
         );
-        $entry = $manifest['src/main.tsx'];
-        \OCP\Util::addScript('cloud_chess', pathinfo($entry['file'], PATHINFO_FILENAME));
+        $entry = $manifest['frontend/main.tsx'];
+        Util::addScript('cloud_chess', pathinfo($entry['file'], PATHINFO_FILENAME));
         $assetBase = $this->url->linkTo('cloud_chess', 'js/');
 
         return new TemplateResponse('cloud_chess', 'main', [

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\CloudChess\Service;
 
-final class InvitationNotFound extends \RuntimeException
+use RuntimeException;
+
+final class InvitationNotFound extends RuntimeException
 {
 }

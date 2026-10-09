@@ -16,6 +16,8 @@ use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
 use OCP\Notification\UnknownNotificationException;
 
+use function in_array;
+
 final class Notifier implements INotifier
 {
     public function __construct(
@@ -46,28 +48,41 @@ final class Notifier implements INotifier
         ) {
             throw new UnknownNotificationException();
         }
+
         try {
-            $invitation = $this->invitations->get(GameInvitationId::fromString($notification->getObjectId()));
+            $invitation = $this->invitations->get(
+                GameInvitationId::fromString($notification->getObjectId()),
+            );
         } catch (InvitationNotFound) {
             throw new AlreadyProcessedException();
         }
+
         $invitation->expireIfDue($this->clock->now());
-        if (!$invitation->isPending() || $invitation->opponentId()->toString() !== $notification->getUser()) {
+
+        if (
+            !$invitation->isPending() ||
+            $invitation->opponentId()->toString() !== $notification->getUser()
+        ) {
             throw new AlreadyProcessedException();
         }
+
         $translations = $this->l10n->get('cloud_chess', $languageCode);
         $challenger = $invitation->challengerId()->toString();
         $name = $this->users->get($challenger)?->getDisplayName() ?? $challenger;
+
         $notification
             ->setParsedSubject($translations->t('%s lädt dich zu einer Schachpartie ein', [$name]))
             ->setParsedMessage($translations->t('Öffne Cloud Chess für Farbe, Zugfrist und alle Einladungen.'))
             ->setLink($this->url->linkToRouteAbsolute('cloud_chess.page.index'))
             ->setIcon($this->url->getAbsoluteURL($this->url->imagePath('cloud_chess', 'app.svg')));
+
         foreach ($notification->getActions() as $action) {
             if (!in_array($action->getLabel(), ['accept', 'decline'], true)) {
                 continue;
             }
+
             $accept = $action->getLabel() === 'accept';
+
             $action
                 ->setParsedLabel($translations->t($accept ? 'Annehmen' : 'Ablehnen'))
                 ->setPrimary($accept)
@@ -77,6 +92,7 @@ final class Notifier implements INotifier
                     ]),
                     'POST',
                 );
+
             $notification->addParsedAction($action);
         }
 

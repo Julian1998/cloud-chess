@@ -28,14 +28,17 @@ final class InvitationNotifications
                 ->setApp('cloud_chess')
                 ->setObject('invitation', $invitation->id()->toString())
                 ->setUser($invitation->opponentId()->toString());
+
             if (!$invitation->isPending()) {
                 $this->manager->markProcessed($notification);
 
                 return null;
             }
+
             $notification
                 ->setDateTime(DateTime::createFromImmutable($invitation->createdAt()))
                 ->setSubject('invitation');
+
             foreach (['accept', 'decline'] as $label) {
                 $notification->addAction(
                     $notification
@@ -49,6 +52,7 @@ final class InvitationNotifications
                         ),
                 );
             }
+
             $this->manager->notify($notification);
 
             return null;

@@ -7,6 +7,20 @@ namespace OCA\CloudChess\Tests;
 use CurlHandle;
 use RuntimeException;
 
+use function curl_error;
+use function curl_exec;
+use function curl_getinfo;
+use function curl_init;
+use function curl_setopt;
+use function curl_setopt_array;
+use function getenv;
+use function html_entity_decode;
+use function http_build_query;
+use function json_decode;
+use function json_encode;
+use function preg_match;
+use function rtrim;
+
 final class HttpClient
 {
     private CurlHandle $curl;
@@ -24,6 +38,7 @@ final class HttpClient
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_TIMEOUT => 30,
         ]);
+
         // Docker reaches Nginx via its service name while preserving the trusted localhost URL.
         if ($connectTo = getenv('CLOUD_CHESS_HTTP_CONNECT_TO')) {
             curl_setopt($this->curl, CURLOPT_CONNECT_TO, [$connectTo]);
@@ -42,8 +57,10 @@ final class HttpClient
     public function request(string $path, ?array $body = null, bool $csrf = true): array
     {
         $headers = ['Accept: application/json'];
+
         if ($body !== null) {
             $headers[] = 'Content-Type: application/json';
+
             if ($csrf) {
                 $headers[] = 'requesttoken: ' . $this->token;
             }
@@ -67,6 +84,7 @@ final class HttpClient
             CURLOPT_POST => $body !== null,
         ]);
         $response = curl_exec($this->curl);
+
         if ($response === false) {
             throw new RuntimeException('HTTP request failed: ' . curl_error($this->curl));
         }

@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace OCA\CloudChess\Service;
 
-final class SystemClock implements \CloudChess\Core\Ports\Clock
+use CloudChess\Core\Ports\Clock;
+use DateTimeImmutable;
+use DateTimeZone;
+
+final class SystemClock implements Clock
 {
-    public function now(): \DateTimeImmutable
+    public function now(): DateTimeImmutable
     {
-        return new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        return new DateTimeImmutable('now', new DateTimeZone('UTC'));
     }
 }

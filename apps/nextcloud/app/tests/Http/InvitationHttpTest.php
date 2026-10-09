@@ -7,6 +7,9 @@ namespace OCA\CloudChess\Tests\Http;
 use OCA\CloudChess\Tests\HttpClient;
 use PHPUnit\Framework\TestCase;
 
+use function array_column;
+use function getenv;
+
 final class InvitationHttpTest extends TestCase
 {
     private static HttpClient $alice;
@@ -32,6 +35,7 @@ final class InvitationHttpTest extends TestCase
         parent::setUp();
         [$status, $result] = self::$bob->request('/invitations');
         self::assertSame(200, $status);
+
         // Resolve only pending invitations between the dedicated demo users; retain their history.
         foreach ($result['invitations'] as $invitation) {
             if ($invitation['challengerId'] === 'chess_alice'

@@ -23,6 +23,12 @@ use OCA\CloudChess\Db\TransactionRunner;
 use OCA\CloudChess\Notification\InvitationNotifications;
 use OCP\IUserManager;
 
+use function array_map;
+use function bin2hex;
+use function preg_match;
+use function random_bytes;
+use function strlen;
+
 final class InvitationService
 {
     public function __construct(
@@ -55,11 +61,13 @@ final class InvitationService
 
         $preference = ColorPreference::tryFrom($color);
         $turnDuration = TurnDuration::tryFrom($duration);
+
         if ($preference === null || $turnDuration === null) {
             throw new InvalidArgumentException('Ungültige Farbe oder Zugfrist.');
         }
 
         $this->directory->assertVisible($actor, $opponent, $opponentSearch);
+
         $invitation = $this->transactions->forPair(
             $actor,
             $opponent,
@@ -88,9 +96,11 @@ final class InvitationService
 
         $invitationId = GameInvitationId::fromString($id);
         $original = $this->invitations->get($invitationId);
+
         if ($original->opponentId()->toString() !== $actor) {
             throw new InvitationNotFound();
         }
+
         $invitation = $this->transactions->forPair(
             $original->challengerId()->toString(),
             $actor,
@@ -127,6 +137,7 @@ final class InvitationService
     {
         $warning = $this->notifications->update($invitation);
         $response = ['invitation' => $this->present($invitation)];
+
         if ($warning !== null) {
             $response['warning'] = $warning;
         }
@@ -137,6 +148,7 @@ final class InvitationService
     private function present(GameInvitation $invitation): array
     {
         $invitation->expireIfDue($this->clock->now());
+
         $challengerId = $invitation->challengerId()->toString();
         $opponentId = $invitation->opponentId()->toString();
 

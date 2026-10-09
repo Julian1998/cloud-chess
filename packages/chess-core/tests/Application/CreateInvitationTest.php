@@ -12,6 +12,7 @@ use CloudChess\Core\Domain\Enum\InvitationStatus;
 use CloudChess\Core\Domain\Enum\TurnDuration;
 use CloudChess\Core\Domain\ValueObject\GameInvitationId;
 use CloudChess\Core\Domain\ValueObject\PlayerId;
+use CloudChess\Core\Tests\Domain\InvitationFixture;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
@@ -60,7 +61,7 @@ final class CreateInvitationTest extends TestCase
     public function test_allows_a_new_invitation_after_an_existing_one_has_expired(): void
     {
         $repository = new InMemoryGameInvitationRepository();
-        $repository->save(\CloudChess\Core\Tests\Domain\InvitationFixture::pending());
+        $repository->save(InvitationFixture::pending());
         $useCase = new CreateInvitation($repository, new FrozenClock(new DateTimeImmutable('2026-09-15T10:00:00+00:00')));
 
         $invitation = $useCase(new CreateInvitationCommand(

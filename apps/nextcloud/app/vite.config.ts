@@ -7,7 +7,7 @@ export default defineConfig({
     outDir: 'js',
     manifest: true,
     rollupOptions: {
-      input: 'src/main.tsx',
+      input: 'frontend/main.tsx',
       output: {
         entryFileNames: '[name]-[hash].mjs',
         chunkFileNames: '[name]-[hash].mjs',

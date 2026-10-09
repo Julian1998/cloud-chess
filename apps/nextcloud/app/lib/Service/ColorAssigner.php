@@ -9,6 +9,8 @@ use CloudChess\Core\Domain\ValueObject\PlayerAssignment;
 use CloudChess\Core\Domain\ValueObject\PlayerId;
 use CloudChess\Core\Ports\ColorAssigner as ColorAssignerPort;
 
+use function random_int;
+
 final class ColorAssigner implements ColorAssignerPort
 {
     public function assign(ColorPreference $preference, PlayerId $challenger, PlayerId $opponent): PlayerAssignment

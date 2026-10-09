@@ -8,6 +8,9 @@ use CloudChess\Core\Domain\Aggregate\Game;
 use CloudChess\Core\Ports\GameRepository as GameRepositoryPort;
 use OCP\IDBConnection;
 
+use function array_map;
+use function gmdate;
+
 final class GameRepository implements GameRepositoryPort
 {
     public function __construct(private IDBConnection $db)

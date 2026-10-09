@@ -7,6 +7,8 @@ namespace CloudChess\Core\Tests\Domain;
 use CloudChess\Core\Domain\Enum\ColorPreference;
 use PHPUnit\Framework\TestCase;
 
+use function array_map;
+
 final class ColorPreferenceTest extends TestCase
 {
     public function test_exposes_the_three_supported_preferences(): void
