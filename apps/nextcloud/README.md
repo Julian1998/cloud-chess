@@ -19,6 +19,8 @@ Open <http://localhost:8080/index.php/apps/cloud_chess/> and sign in using the d
 
 For iterative development, run `make nextcloud-build` and reload the app page. Vite's manifest supplies hashed asset URLs, so updated JavaScript and CSS do not require enabling Nextcloud debug mode. Frontend source, package configuration and tests live in `apps/nextcloud/app`; compiled modules and styles live in its `js/` directory.
 
+The generated `js/` directory, including the Vite manifest, is ignored by Git. A fresh checkout requires `make nextcloud-build` before the app can run. `make nextcloud-install` and `make nextcloud-package` include this build automatically; the installable package contains the compiled assets.
+
 ## Demo users
 
 The current local instance contains `chess_alice`, `chess_bob` and `chess_carla`, with the local demo password `CloudChess-Demo-2026!`. Use separate browsers/profiles or log out between accounts to exercise invitations.
