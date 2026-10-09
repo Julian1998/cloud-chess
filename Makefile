@@ -49,7 +49,7 @@ nextcloud-test-http:
 
 nextcloud-package: nextcloud-build
 	mkdir -p build
-	tar --exclude='./frontend' --exclude='./node_modules' --exclude='./package.json' --exclude='./pnpm-lock.yaml' --exclude='./pnpm-workspace.yaml' --exclude='./tsconfig.json' --exclude='./vite.config.ts' --exclude='./tests' --exclude='./vendor/cloud-chess/chess-core/vendor' --exclude='./vendor/cloud-chess/chess-core/tests' --exclude='./vendor/cloud-chess/chess-core/.phpunit*' --exclude='./.gitkeep' --exclude='./.gitignore' --transform='s,^\.,cloud_chess,' -czf build/cloud_chess.tar.gz -C apps/nextcloud/app .
+	tar --exclude='./src' --exclude='./node_modules' --exclude='./package.json' --exclude='./pnpm-lock.yaml' --exclude='./pnpm-workspace.yaml' --exclude='./tsconfig.json' --exclude='./vite.config.ts' --exclude='./tests' --exclude='./vendor/cloud-chess/chess-core/vendor' --exclude='./vendor/cloud-chess/chess-core/tests' --exclude='./vendor/cloud-chess/chess-core/.phpunit*' --exclude='./.gitkeep' --exclude='./.gitignore' --transform='s,^\.,cloud_chess,' -czf build/cloud_chess.tar.gz -C apps/nextcloud/app .
 
 .PHONY: format format-check
 

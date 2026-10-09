@@ -1,3 +1,6 @@
+import axios, { isAxiosError } from '@nextcloud/axios';
+import { generateUrl } from '@nextcloud/router';
+
 export type ColorPreference = 'white' | 'black' | 'random';
 export type TurnDuration = 'P1D' | 'P2D';
 export type InvitationStatus =
@@ -49,10 +52,7 @@ export type CreateInvitation = {
 export class ApiClient {
   private readonly apiBase: string;
 
-  public constructor(
-    apiBase: string,
-    private readonly requestToken: string,
-  ) {
+  public constructor(apiBase = generateUrl('/apps/cloud_chess/api')) {
     this.apiBase = apiBase.replace(/\/$/, '');
   }
 
@@ -77,47 +77,27 @@ export class ApiClient {
   }
 
   private async request<T>(path: string, body?: object): Promise<T> {
-    let response: Response;
-
     try {
-      response = await fetch(`${this.apiBase}${path}`, {
-        method: body === undefined ? 'GET' : 'POST',
-        credentials: 'same-origin',
-        headers: {
-          Accept: 'application/json',
-          ...(body === undefined
-            ? {}
-            : {
-                'Content-Type': 'application/json',
-                requesttoken: this.requestToken,
-              }),
-        },
-        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-      });
-    } catch {
+      const response =
+        body === undefined
+          ? await axios.get<T>(`${this.apiBase}${path}`)
+          : await axios.post<T>(`${this.apiBase}${path}`, body);
+      return response.data;
+    } catch (failure) {
+      if (isAxiosError(failure) && failure.response) {
+        const payload: unknown = failure.response.data;
+        const message =
+          typeof payload === 'object' &&
+          payload !== null &&
+          'error' in payload &&
+          typeof payload.error === 'string'
+            ? payload.error
+            : `Die Anfrage ist fehlgeschlagen (${failure.response.status}).`;
+        throw new Error(message);
+      }
       throw new Error(
         'Der Server ist nicht erreichbar. Bitte versuche es erneut.',
       );
     }
-
-    let payload: unknown;
-    try {
-      payload = await response.json();
-    } catch {
-      throw new Error('Die Serverantwort konnte nicht gelesen werden.');
-    }
-
-    if (!response.ok) {
-      const error =
-        typeof payload === 'object' &&
-        payload !== null &&
-        'error' in payload &&
-        typeof payload.error === 'string'
-          ? payload.error
-          : `Die Anfrage ist fehlgeschlagen (${response.status}).`;
-      throw new Error(error);
-    }
-
-    return payload as T;
   }
 }

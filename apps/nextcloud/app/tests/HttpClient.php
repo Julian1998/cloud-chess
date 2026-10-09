@@ -51,7 +51,7 @@ final class HttpClient
             'requesttoken' => $token,
         ]), ['Content-Type: application/x-www-form-urlencoded', 'Origin: ' . $this->base]);
         $page = $this->send('/index.php/apps/cloud_chess/')[1];
-        $this->token = $this->readToken($page, 'data-request-token');
+        $this->token = $this->readToken($page, 'data-requesttoken');
     }
 
     public function request(string $path, ?array $body = null, bool $csrf = true): array

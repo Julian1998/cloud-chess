@@ -6,25 +6,26 @@
   "packageManager": "pnpm@12.10.1",
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit",
     "build": "vite build",
-    "format": "prettier --ignore-path ../../../.prettierignore --write \"frontend/**/*.{ts,tsx,css}\" \"*.{ts,json,yaml}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\"",
-    "format:check": "prettier --ignore-path ../../../.prettierignore --check \"frontend/**/*.{ts,tsx,css}\" \"*.{ts,json,yaml}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\""
-  },
-  "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-error-boundary": "^6.1.6",
-    "react-router-dom": "^7.18.4"
+    "format": "prettier --ignore-path ../../../.prettierignore --write \"src/**/*.{ts,vue,css}\" \"*.{ts,json,yaml}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\"",
+    "format:check": "prettier --ignore-path ../../../.prettierignore --check \"src/**/*.{ts,vue,css}\" \"*.{ts,json,yaml}\" \"../../../packages/chess-core/composer.json\" \"../../../.prettierrc.json\""
   },
   "devDependencies": {
-    "@testing-library/react": "^16.3.3",
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "@vue/test-utils": "^2.5.1",
     "jsdom": "^30.1.2",
     "prettier": "^3.9.9",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.5",
-    "vitest": "^5.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3",
+    "vue-tsc": "^3.3.12"
+  },
+  "dependencies": {
+    "@nextcloud/axios": "^2.6.0",
+    "@nextcloud/dialogs": "^7.5.0",
+    "@nextcloud/router": "^3.2.0",
+    "@nextcloud/vue": "^9.13.1",
+    "vue": "^3.5.43"
   }
 }

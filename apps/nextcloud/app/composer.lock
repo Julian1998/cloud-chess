@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4fcff6a61618b761be51e9a6b79ae94",
+    "content-hash": "6b27e54e015c93ce7af97da4fe6f11ab",
     "packages": [
         {
             "name": "cloud-chess/chess-core",
@@ -12,15 +12,15 @@
             "dist": {
                 "type": "path",
                 "url": "/workspace/chess-core",
-                "reference": "83166a8418ee3b616e4d3b286104779e9405bf18"
+                "reference": "45c764128899a7e408977ec14a130914111750a6"
             },
             "require": {
                 "php": "^8.3"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.0",
-                "phpstan/phpstan": "^2.2",
-                "phpunit/phpunit": "^12.5"
+                "friendsofphp/php-cs-fixer": "^3.95.27",
+                "phpstan/phpstan": "^2.3.1",
+                "phpunit/phpunit": "^12.5.38"
             },
             "type": "library",
             "autoload": {

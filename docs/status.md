@@ -4,7 +4,7 @@ Verified on 2026-10-09, continuing the implementation begun on 2026-09-12.
 
 ## Working milestone
 
-Cloud Chess 0.1.0 is enabled in the local Nextcloud 34.0.4 instance. Signed-in users can search permitted Nextcloud users, send invitations, view sent/received lists, and accept or decline from both the app and native Nextcloud notifications. Both action surfaces call the same application use cases. Invitation and game records persist in MariaDB.
+Cloud Chess 0.1.0 is enabled in the local Nextcloud 34.0.4 instance. Signed-in users can search permitted Nextcloud users, send invitations, view sent/received lists, and accept or decline from both the app and native Nextcloud notifications. Both action surfaces call the same application use cases. The Vue frontend uses official Nextcloud components. Its sidebar groups actions required, outgoing invitations and ongoing games, with a new-game invitation modal. Invitation and game records persist in MariaDB.
 
 The core includes create, accept and decline use cases, invitation restoration and creation timestamps. Domain cancellation remains available without a cancellation UI. Nextcloud adapters supply repositories, transactions, clock and server-side color assignment. Accepted game IDs equal the originating invitation IDs, enforcing one game per invitation through the game primary key. Pair locks serialize creation and response operations.
 
@@ -13,7 +13,7 @@ Notifications are published after commit and removed after resolution. Obsolete/
 ## Verification evidence
 
 - Core: 35 PHPUnit tests, 62 assertions; PHPStan checks 38 files without errors.
-- Nextcloud React frontend: eleven tests covering API requests, invitation actions, original search terms, stale responses, host configuration and the error boundary; TypeScript check and Vite production build pass with pnpm 12.10.1; pnpm audit reports no known vulnerabilities in the locked dependencies.
+- Nextcloud Vue frontend: twelve tests covering API requests, invitation actions, original search terms, stale responses, Nextcloud URL generation, CSRF headers, sidebar actions, modal submission, game selection and rendering failures; TypeScript check and Vite production build pass with pnpm 12.10.1; pnpm audit reports no known vulnerabilities in the locked dependencies.
 - Real Nextcloud/MariaDB integration: creation, listing, duplicate rejection, third-user isolation, acceptance/replay, decline, restoration, forced rollback, expiry, restricted user discovery and notification persistence/removal.
 - Concurrent create and accept requests each commit once; the competing request receives a conflict.
 - HTTP checks: real login, CSRF rejection, invalid inputs, actor spoofing rejection, foreign-user denial, duplicate/replayed actions.
@@ -28,6 +28,6 @@ The existing empty `packages/chess-core/src/Presentation/ChessApi/.gitkeep` rema
 
 ## Remaining scope
 
-Playable chessboard, moves, rule validation, Stockfish, invitation cancellation UI and background jobs are not implemented. Game summaries record the initial deadline; they do not implement a playable timed game yet. Automatic live synchronization between open tabs is not implemented; refresh loads the authoritative state.
+Playable chessboard, moves, rule validation, Stockfish, invitation cancellation UI and background jobs are not implemented. Game summaries record the initial deadline; they do not implement a playable timed game yet. The core does not yet expose a current-turn actor, so actions required currently groups incoming invitations; a game-specific “your turn” group awaits move support. Automatic live synchronization between open tabs is not implemented; refresh loads the authoritative state.
 
 The local stack is development infrastructure. Other Nextcloud versions, App Store publication, native mobile/push delivery and production operations have not been verified. See [local setup](../apps/nextcloud/README.md) and [architecture](architecture.md).

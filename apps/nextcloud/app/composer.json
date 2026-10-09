@@ -9,7 +9,7 @@
   },
   "require-dev": {
     "ext-curl": "*",
-    "phpunit/phpunit": "^12.5"
+    "phpunit/phpunit": "^12.5.38"
   },
   "repositories": [
     {

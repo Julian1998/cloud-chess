@@ -1,6 +1,6 @@
 # Nextcloud development adapter
 
-Cloud Chess 0.1.0 runs on the local Nextcloud 34 stack with Nginx, FPM and MariaDB. It supports user search, sent/received invitations and accept/decline through both the React app and native Nextcloud notifications. Accepted invitations create persisted game records with colors and a first deadline. The playable board is still pending.
+Cloud Chess 0.1.0 runs on the local Nextcloud 34 stack with Nginx, FPM and MariaDB. It supports user search, sent/received invitations and accept/decline through both the Vue app and native Nextcloud notifications. Accepted invitations create persisted game records with colors and a first deadline. The playable board is still pending.
 
 ## First install
 
@@ -17,9 +17,9 @@ The copy is only needed when `.env` does not exist. Build commands package the c
 
 Open <http://localhost:8080/index.php/apps/cloud_chess/> and sign in using the development account configured in `.env`. HTTP is bound to localhost. This stack and its example credentials are for local development.
 
-For iterative development, run `make nextcloud-build` and reload the app page. Vite's manifest supplies hashed asset URLs, so updated JavaScript and CSS do not require enabling Nextcloud debug mode. React source and tests live in `apps/nextcloud/app/frontend/`; PHP classes remain in `lib/`, following Nextcloud's app conventions. Compiled modules and styles live in `js/`.
+For iterative development, run `make nextcloud-build` and reload the app page. Vite's manifest supplies hashed asset URLs, so updated JavaScript and CSS do not require enabling Nextcloud debug mode. Vue source and tests live in `apps/nextcloud/app/src/`; PHP classes remain in `lib/`, following Nextcloud's app conventions. Compiled modules and styles live in `js/`.
 
-Frontend dependencies are locked in `pnpm-lock.yaml`. Build and check commands use `pnpm install --frozen-lockfile`. `pnpm-workspace.yaml` permits esbuild's required installation script.
+Frontend dependencies are locked in `pnpm-lock.yaml`. Build and check commands use `pnpm install --frozen-lockfile`.
 
 The generated `js/` directory, including the Vite manifest, is ignored by Git. A fresh checkout requires `make nextcloud-build` before the app can run. `make nextcloud-install` and `make nextcloud-package` include this build automatically; the installable package contains the compiled assets.
 
@@ -56,3 +56,7 @@ make nextcloud-down
 ```
 
 Volumes preserve database and Nextcloud files across container restarts. `docker compose down -v` removes them permanently and is not part of the normal workflow.
+
+The frontend uses Vue 3 with `@nextcloud/vue` 9 and the official Nextcloud app navigation/content components. TypeScript remains on 6.0.3 because the current `vue-tsc` does not support TypeScript 7. Composer resolves dependencies against PHP 8.3; PHPUnit stays on the latest compatible 12.x release.
+
+The sidebar separates incoming invitations under “Handlungsbedarf”, outgoing invitations and ongoing games. “Neue Partie” opens the invitation modal. Incoming invitations can be accepted or declined directly in the sidebar. Game turns are not implemented yet, so game-specific action indicators are deferred. Requests, URL generation and toast feedback use `@nextcloud/axios`, `@nextcloud/router` and `@nextcloud/dialogs`.

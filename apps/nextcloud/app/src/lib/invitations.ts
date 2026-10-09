@@ -5,8 +5,6 @@ type InvitationGroups = {
   sent: Invitation[];
 };
 
-export type InvitationTab = keyof InvitationGroups;
-
 export function splitInvitations(
   invitations: Invitation[],
   userId: string,
