@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { t } from '@nextcloud/l10n';
 import { ref } from 'vue';
 import NcButton from '@nextcloud/vue/components/NcButton';
 import type {
@@ -21,13 +22,13 @@ const colorPreference = ref<ColorPreference>('random');
 const turnDuration = ref<TurnDuration>('P1D');
 const submitting = ref(false);
 const colors = [
-  ['white', '○', 'Weiß'],
-  ['random', '◐', 'Zufall'],
-  ['black', '●', 'Schwarz'],
+  ['white', '○', t('cloud_chess', 'White')],
+  ['random', '◐', t('cloud_chess', 'Random')],
+  ['black', '●', t('cloud_chess', 'Black')],
 ] as const;
 const durations = [
-  ['P1D', '1 Tag'],
-  ['P2D', '2 Tage'],
+  ['P1D', t('cloud_chess', '1 day')],
+  ['P2D', t('cloud_chess', '2 days')],
 ] as const;
 
 function select(user: User) {
@@ -67,8 +68,8 @@ async function submit() {
     <div class="cc-panel__heading">
       <span class="cc-panel__number" aria-hidden="true">01</span>
       <div>
-        <h2 id="cc-compose-title">Neue Einladung</h2>
-        <p>Wähle Mitspieler und Bedenkzeit.</p>
+        <h2 id="cc-compose-title">{{ t('cloud_chess', 'New invitation') }}</h2>
+        <p>{{ t('cloud_chess', 'Choose a player and time per move.') }}</p>
       </div>
     </div>
     <form @submit.prevent="submit">
@@ -80,7 +81,7 @@ async function submit() {
         @select="select"
       />
       <fieldset class="cc-fieldset">
-        <legend>Deine Wunschfarbe</legend>
+        <legend>{{ t('cloud_chess', 'Your preferred color') }}</legend>
         <div class="cc-segments">
           <label v-for="[value, icon, label] in colors" :key="value">
             <input
@@ -95,7 +96,7 @@ async function submit() {
         </div>
       </fieldset>
       <fieldset class="cc-fieldset">
-        <legend>Zeit pro Zug</legend>
+        <legend>{{ t('cloud_chess', 'Time per move') }}</legend>
         <div class="cc-segments cc-segments--two">
           <label v-for="[value, label] in durations" :key="value">
             <input
@@ -112,7 +113,11 @@ async function submit() {
         variant="primary"
         :disabled="!selectedUser || submitting"
       >
-        {{ submitting ? 'Wird gesendet …' : 'Einladung senden' }}
+        {{
+          submitting
+            ? t('cloud_chess', 'Sending …')
+            : t('cloud_chess', 'Send invitation')
+        }}
       </NcButton>
     </form>
   </section>

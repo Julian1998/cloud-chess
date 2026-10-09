@@ -1,3 +1,4 @@
+import { t } from '@nextcloud/l10n';
 import { showSuccess, showError, showWarning } from '@nextcloud/dialogs';
 import { onMounted, onScopeDispose, ref } from 'vue';
 import type { ApiClient, CreateInvitation, Invitation } from '../api';
@@ -47,7 +48,9 @@ export function useInvitations(api: ApiClient) {
       const result = await api.createInvitation(data);
       notice.value =
         result.warning ??
-        `Einladung an ${result.invitation.opponentName} wurde gesendet.`;
+        t('cloud_chess', 'Invitation sent to {player}.', {
+          player: result.invitation.opponentName,
+        });
       if (result.warning) showWarning(result.warning);
       else showSuccess(notice.value);
       await refresh();
@@ -74,8 +77,11 @@ export function useInvitations(api: ApiClient) {
       notice.value =
         result.warning ??
         (action === 'accept'
-          ? 'Einladung angenommen. Die Partie wurde angelegt.'
-          : 'Einladung abgelehnt.');
+          ? t(
+              'cloud_chess',
+              'The invitation was accepted. The game has been created.',
+            )
+          : t('cloud_chess', 'The invitation was declined.'));
       await refresh();
     } catch (failure) {
       error.value = errorMessage(failure);

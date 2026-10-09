@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { t } from '@nextcloud/l10n';
 import { useId } from 'vue';
 import type { Invitation } from '../api';
 import InvitationCard from './InvitationCard.vue';
@@ -21,26 +22,33 @@ const headingId = useId();
       <span class="cc-panel__number" aria-hidden="true">02</span>
       <div>
         <h2 :id="headingId">
-          {{ received ? 'Erhaltene Einladungen' : 'Gesendete Einladungen' }}
+          {{
+            received
+              ? t('cloud_chess', 'Received invitations')
+              : t('cloud_chess', 'Sent invitations')
+          }}
         </h2>
-        <p>Deine offenen und vergangenen Herausforderungen.</p>
+        <p>{{ t('cloud_chess', 'Your pending and previous challenges.') }}</p>
       </div>
     </div>
     <div class="cc-list">
       <div v-if="loading" class="cc-empty" aria-live="polite">
-        <span class="cc-spinner" aria-hidden="true" />Einladungen werden geladen
-        …
+        <span class="cc-spinner" aria-hidden="true" />{{
+          t('cloud_chess', 'Loading invitations …')
+        }}
       </div>
       <div v-else-if="!invitations.length" class="cc-empty">
         <span aria-hidden="true">♙</span>
         <strong>{{
-          received ? 'Noch keine Einladungen' : 'Noch nichts gesendet'
+          received
+            ? t('cloud_chess', 'No invitations yet')
+            : t('cloud_chess', 'Nothing sent yet')
         }}</strong>
         <p>
           {{
             received
-              ? 'Neue Herausforderungen erscheinen hier.'
-              : 'Nutze das Formular, um eine Partie zu starten.'
+              ? t('cloud_chess', 'New challenges will appear here.')
+              : t('cloud_chess', 'Use New game to start a game.')
           }}
         </p>
       </div>

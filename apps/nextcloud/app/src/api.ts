@@ -1,3 +1,4 @@
+import { t } from '@nextcloud/l10n';
 import axios, { isAxiosError } from '@nextcloud/axios';
 import { generateUrl } from '@nextcloud/router';
 
@@ -92,11 +93,13 @@ export class ApiClient {
           'error' in payload &&
           typeof payload.error === 'string'
             ? payload.error
-            : `Die Anfrage ist fehlgeschlagen (${failure.response.status}).`;
+            : t('cloud_chess', 'The request failed ({status}).', {
+                status: failure.response.status,
+              });
         throw new Error(message);
       }
       throw new Error(
-        'Der Server ist nicht erreichbar. Bitte versuche es erneut.',
+        t('cloud_chess', 'The server is unreachable. Please try again.'),
       );
     }
   }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { t } from '@nextcloud/l10n';
 import { computed, ref } from 'vue';
 import NcAppContent from '@nextcloud/vue/components/NcAppContent';
 import NcAppNavigation from '@nextcloud/vue/components/NcAppNavigation';
@@ -34,7 +35,7 @@ const selected = computed(() =>
 );
 const sidebarSections = computed(() => [
   {
-    name: 'Handlungsbedarf',
+    name: t('cloud_chess', 'Action required'),
     invitations: invitations.value.filter(
       (invitation) =>
         invitation.status === 'pending' &&
@@ -42,7 +43,7 @@ const sidebarSections = computed(() => [
     ),
   },
   {
-    name: 'Einladungen',
+    name: t('cloud_chess', 'Invitations'),
     invitations: invitations.value.filter(
       (invitation) =>
         invitation.status === 'pending' &&
@@ -50,7 +51,7 @@ const sidebarSections = computed(() => [
     ),
   },
   {
-    name: 'Laufende Partien',
+    name: t('cloud_chess', 'Ongoing games'),
     invitations: invitations.value.filter(
       (invitation) => invitation.game !== null,
     ),
@@ -77,12 +78,12 @@ async function handleCreate(data: CreateInvitation) {
 
 <template>
   <NcAppNavigation>
-    <NcButton class="cc-new-game" variant="primary" @click="composing = true"
-      >Neue Partie</NcButton
-    >
+    <NcButton class="cc-new-game" variant="primary" @click="composing = true">{{
+      t('cloud_chess', 'New game')
+    }}</NcButton>
     <template #list>
       <NcAppNavigationItem
-        name="Übersicht"
+        :name="t('cloud_chess', 'Overview')"
         :active="!selectedId"
         @click="selectedId = null"
       />
@@ -93,7 +94,13 @@ async function handleCreate(data: CreateInvitation) {
           :key="invitation.id"
           :name="
             invitation.status === 'pending'
-              ? `${invitation.opponentId === userId ? 'Von' : 'An'} ${opponent(invitation)}`
+              ? invitation.opponentId === userId
+                ? t('cloud_chess', 'From {player}', {
+                    player: opponent(invitation),
+                  })
+                : t('cloud_chess', 'To {player}', {
+                    player: opponent(invitation),
+                  })
               : opponent(invitation)
           "
           :active="selectedId === invitation.id"
@@ -123,7 +130,7 @@ async function handleCreate(data: CreateInvitation) {
                     fill="currentColor"
                     d="m9 16-4-4-1.4 1.4L9 18.8 21.4 6.4 20 5z"
                   /></svg></template
-              >Annehmen
+              >{{ t('cloud_chess', 'Accept') }}
             </NcActionButton>
             <NcActionButton
               :disabled="busyInvitation === invitation.id"
@@ -140,7 +147,7 @@ async function handleCreate(data: CreateInvitation) {
                     fill="currentColor"
                     d="m6.4 5-1.4 1.4L10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6z"
                   /></svg></template
-              >Ablehnen
+              >{{ t('cloud_chess', 'Decline') }}
             </NcActionButton>
           </template>
         </NcAppNavigationItem>
@@ -152,20 +159,30 @@ async function handleCreate(data: CreateInvitation) {
       <header class="cc-header">
         <div>
           <span class="cc-eyebrow">Cloud Chess</span>
-          <h1>Schachpartien, Zug für Zug.</h1>
-          <p>Fordere jemanden heraus und spiele in deinem eigenen Tempo.</p>
+          <h1>{{ t('cloud_chess', 'Chess, one move at a time.') }}</h1>
+          <p>
+            {{
+              t('cloud_chess', 'Challenge someone and play at your own pace.')
+            }}
+          </p>
         </div>
         <NcButton
           :disabled="refreshing || loading"
-          aria-label="Einladungen aktualisieren"
+          :aria-label="t('cloud_chess', 'Refresh invitations')"
           @click="refresh()"
         >
-          {{ refreshing ? 'Aktualisiere …' : 'Aktualisieren' }}
+          {{
+            refreshing
+              ? t('cloud_chess', 'Refreshing …')
+              : t('cloud_chess', 'Refresh')
+          }}
         </NcButton>
       </header>
       <div v-if="error" class="cc-message cc-message--error" role="alert">
         <span>{{ error }}</span>
-        <NcButton @click="refresh()">Erneut versuchen</NcButton>
+        <NcButton @click="refresh()">{{
+          t('cloud_chess', 'Try again')
+        }}</NcButton>
       </div>
       <div v-if="notice" class="cc-message cc-message--success" role="status">
         {{ notice }}
@@ -198,7 +215,7 @@ async function handleCreate(data: CreateInvitation) {
   </NcAppContent>
   <NcModal
     v-if="composing"
-    name="Neue Partie"
+    :name="t('cloud_chess', 'New game')"
     size="small"
     @close="composing = false"
   >

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { t } from '@nextcloud/l10n';
 import { toRef, useId } from 'vue';
 import type { ApiClient, User } from '../api';
 import { useUserSearch } from '../composables/useUserSearch';
@@ -26,7 +27,7 @@ function change(event: Event) {
 
 <template>
   <div class="cc-field cc-user-search">
-    <label :for="searchId">Mitspieler suchen</label>
+    <label :for="searchId">{{ t('cloud_chess', 'Search players') }}</label>
     <div class="cc-search-input">
       <span aria-hidden="true">⌕</span>
       <input
@@ -34,15 +35,19 @@ function change(event: Event) {
         type="search"
         :value="query"
         autocomplete="off"
-        placeholder="Name oder Benutzerkennung"
+        :placeholder="t('cloud_chess', 'Name or username')"
         :aria-describedby="`${searchId}-hint`"
         :aria-controls="`${searchId}-results`"
         :aria-expanded="users.length > 0"
         @input="change"
       />
     </div>
-    <small :id="`${searchId}-hint`">Gib mindestens zwei Zeichen ein.</small>
-    <p v-if="searching" class="cc-search-state">Suche läuft …</p>
+    <small :id="`${searchId}-hint`">{{
+      t('cloud_chess', 'Enter at least two characters.')
+    }}</small>
+    <p v-if="searching" class="cc-search-state">
+      {{ t('cloud_chess', 'Searching …') }}
+    </p>
     <p v-if="error" class="cc-search-state cc-search-state--error" role="alert">
       {{ error }}
     </p>
@@ -56,13 +61,13 @@ function change(event: Event) {
       "
       class="cc-search-state"
     >
-      Keine Personen gefunden.
+      {{ t('cloud_chess', 'No players found.') }}
     </p>
     <ul v-if="users.length" :id="`${searchId}-results`" class="cc-user-results">
       <li v-for="user in users" :key="user.id">
         <button type="button" @click="emit('select', user)">
           <span class="cc-avatar" aria-hidden="true">{{
-            user.displayName.trim().slice(0, 1).toLocaleUpperCase('de')
+            user.displayName.trim().slice(0, 1).toLocaleUpperCase()
           }}</span>
           <span
             ><strong>{{ user.displayName }}</strong
@@ -72,7 +77,12 @@ function change(event: Event) {
       </li>
     </ul>
     <p v-if="selectedUser" class="cc-selected" role="status">
-      ✓ {{ selectedUser.displayName }} ausgewählt
+      ✓
+      {{
+        t('cloud_chess', '{player} selected', {
+          player: selectedUser.displayName,
+        })
+      }}
     </p>
   </div>
 </template>

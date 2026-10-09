@@ -60,3 +60,5 @@ Volumes preserve database and Nextcloud files across container restarts. `docker
 The frontend uses Vue 3 with `@nextcloud/vue` 9 and the official Nextcloud app navigation/content components. TypeScript remains on 6.0.3 because the current `vue-tsc` does not support TypeScript 7. Composer resolves dependencies against PHP 8.3; PHPUnit stays on the latest compatible 12.x release.
 
 The sidebar separates incoming invitations under “Handlungsbedarf”, outgoing invitations and ongoing games. “Neue Partie” opens the invitation modal. Incoming invitations can be accepted or declined directly in the sidebar. Game turns are not implemented yet, so game-specific action indicators are deferred. Requests, URL generation and toast feedback use `@nextcloud/axios`, `@nextcloud/router` and `@nextcloud/dialogs`.
+
+Frontend text uses English `t('cloud_chess', ...)` keys through `@nextcloud/l10n`. German translations are supplied in `l10n/de.json` and `l10n/de.js`; dates use the signed-in user’s Nextcloud locale. Tests register the German catalog and exercise interpolated feedback.

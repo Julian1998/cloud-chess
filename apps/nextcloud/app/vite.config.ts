@@ -1,9 +1,10 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import packageJson from './package.json' with { type: 'json' };
 
 export default defineConfig({
   plugins: [vue()],
+  test: { setupFiles: ['./src/test-setup.ts'] },
   base: './',
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),

@@ -172,6 +172,9 @@ importers:
       '@nextcloud/dialogs':
         specifier: ^7.5.0
         version: 7.5.0(@vue/compiler-sfc@3.5.43)(axios@1.20.0(debug@4.4.3))(debug@4.4.3)(rolldown@1.2.13)(typescript@6.0.3)(vite@8.3.4)
+      '@nextcloud/l10n':
+        specifier: ^3.4.1
+        version: 3.4.1
       '@nextcloud/router':
         specifier: ^3.2.0
         version: 3.2.0
