@@ -24,7 +24,7 @@ nextcloud-recreate:
 nextcloud-logs:
 	$(NEXTCLOUD_COMPOSE) logs -f app web db
 
-.PHONY: client-build client-check nextcloud-build nextcloud-install nextcloud-test nextcloud-package
+.PHONY: client-build client-check nextcloud-build nextcloud-install nextcloud-test nextcloud-test-http nextcloud-package
 
 client-build:
 	docker run --rm -v "$(CURDIR):/app" -w /app/apps/nextcloud/app node:24-alpine sh -c 'npm ci && npm run typecheck && npm run build'
@@ -42,6 +42,10 @@ nextcloud-install: nextcloud-up nextcloud-build
 nextcloud-test:
 	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/cloud_chess/tests/integration.php
 	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/cloud_chess/tests/concurrency.php
+
+nextcloud-test-http:
+	$(NEXTCLOUD_COMPOSE) run --rm --no-deps workspace composer install --no-interaction
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data -e CLOUD_CHESS_DEMO_PASSWORD -e CLOUD_CHESS_HTTP_CONNECT_TO=localhost:8080:web:80 app php custom_apps/cloud_chess/vendor/bin/phpunit --configuration custom_apps/cloud_chess/tests/phpunit-http.xml
 
 nextcloud-package: nextcloud-build
 	mkdir -p build

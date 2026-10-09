@@ -4,7 +4,7 @@ Cloud Chess 0.1.0 runs on the local Nextcloud 34 stack with Nginx, FPM and Maria
 
 ## First install
 
-Prerequisites: Docker with Compose, GNU Make, and Python 3 for the optional HTTP checks.
+Prerequisites: Docker with Compose and GNU Make.
 
 From the repository root:
 
@@ -38,10 +38,10 @@ make core-test
 make core-analyse
 make client-check
 make nextcloud-test
-CLOUD_CHESS_DEMO_PASSWORD='CloudChess-Demo-2026!' python3 apps/nextcloud/tests/http-invitations.py
+CLOUD_CHESS_DEMO_PASSWORD='CloudChess-Demo-2026!' make nextcloud-test-http
 ```
 
-The integration/concurrency tests create and delete dedicated temporary accounts and exercise real database transactions. The HTTP test uses the demo accounts and changes their invitation history. It checks CSRF, actor spoofing, third-user isolation and repeated actions. Do not run these test scripts against a production instance. Test PHP scripts reject HTTP execution before loading Nextcloud.
+The integration/concurrency tests create and delete dedicated temporary accounts and exercise real database transactions. The PHPUnit HTTP suite uses the demo accounts and changes their invitation history. It checks real session login, CSRF, input validation, actor spoofing, third-user isolation, duplicate invitations and repeated actions. Its Make target installs development dependencies and runs inside the Nextcloud container against Nginx. Do not run these tests against a production instance. Test entry points reject HTTP execution.
 
 `make nextcloud-package` creates `build/cloud_chess.tar.gz`, containing runtime dependencies and compiled assets, excluding frontend sources, Node dependencies, test scripts and nested core development dependencies. Extract the `cloud_chess` directory into a Nextcloud 34 instance's `custom_apps/` and run `occ app:enable cloud_chess` as its web user. App Store publication and compatibility with other Nextcloud versions have not been verified.
 
