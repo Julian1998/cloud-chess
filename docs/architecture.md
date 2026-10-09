@@ -8,7 +8,7 @@
 - `Application`: create, accept and decline use cases.
 - `Ports`: repository, transaction, clock and color-assignment contracts.
 
-Concrete persistence, user discovery and notification adapters live in `apps/nextcloud/app`. The React/TypeScript client lives in `clients/chess-client`; Vite compiles its assets into the app package.
+Concrete persistence, user discovery and notification adapters live in `apps/nextcloud/app`. The React/TypeScript frontend belongs to the Nextcloud app: `apps/nextcloud/app/src` contains its source, and Vite builds hashed JavaScript/CSS assets into the app-local `js` directory. The Nextcloud page loads their URLs from Vite's build manifest. `main.tsx` mounts a BrowserRouter with the host-provided base path. `App.tsx` supplies the error boundary and Suspense around the route tree. The invitation page composes focused components; hooks own invitation loading/mutations and user search. The invitation page is loaded as a separate JavaScript module.
 
 ```text
 Browser -- HTTP --> Nextcloud controller -- PHP call --> chess-core use case

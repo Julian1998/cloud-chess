@@ -17,12 +17,7 @@ The copy is only needed when `.env` does not exist. Build commands package the c
 
 Open <http://localhost:8080/index.php/apps/cloud_chess/> and sign in using the development account configured in `.env`. HTTP is bound to localhost. This stack and its example credentials are for local development.
 
-For iterative development, enable debug mode so rebuilt assets are loaded:
-
-```bash
-docker compose --env-file apps/nextcloud/.env -f apps/nextcloud/compose.yaml exec -T -u www-data app php occ config:system:set debug --type=boolean --value=true
-make nextcloud-build
-```
+For iterative development, run `make nextcloud-build` and reload the app page. Vite's manifest supplies hashed asset URLs, so updated JavaScript and CSS do not require enabling Nextcloud debug mode. Frontend source, package configuration and tests live in `apps/nextcloud/app`; compiled modules and styles live in its `js/` directory.
 
 ## Demo users
 
@@ -46,7 +41,7 @@ CLOUD_CHESS_DEMO_PASSWORD='CloudChess-Demo-2026!' python3 apps/nextcloud/tests/h
 
 The integration/concurrency tests create and delete dedicated temporary accounts and exercise real database transactions. The HTTP test uses the demo accounts and changes their invitation history. It checks CSRF, actor spoofing, third-user isolation and repeated actions. Do not run these test scripts against a production instance. Test PHP scripts reject HTTP execution before loading Nextcloud.
 
-`make nextcloud-package` creates `build/cloud_chess.tar.gz`, containing runtime dependencies and compiled assets, excluding test scripts and nested core development dependencies. Extract the `cloud_chess` directory into a Nextcloud 34 instance's `custom_apps/` and run `occ app:enable cloud_chess` as its web user. App Store publication and compatibility with other Nextcloud versions have not been verified.
+`make nextcloud-package` creates `build/cloud_chess.tar.gz`, containing runtime dependencies and compiled assets, excluding frontend sources, Node dependencies, test scripts and nested core development dependencies. Extract the `cloud_chess` directory into a Nextcloud 34 instance's `custom_apps/` and run `occ app:enable cloud_chess` as its web user. App Store publication and compatibility with other Nextcloud versions have not been verified.
 
 ## Stack management
 

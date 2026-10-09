@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Invitation } from './api';
-import { splitInvitations } from './app';
+import type { Invitation } from '../api';
+import { splitInvitations } from './invitations';
 
 const baseInvitation: Invitation = {
   id: 'invite-1',

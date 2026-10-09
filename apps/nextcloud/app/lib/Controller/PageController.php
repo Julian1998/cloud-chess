@@ -22,10 +22,18 @@ final class PageController extends Controller
     #[NoCSRFRequired]
     public function index(): TemplateResponse
     {
-        \OCP\Util::addScript('cloud_chess', 'chess-client');
-        \OCP\Util::addStyle('cloud_chess', 'chess-client');
+        $manifest = json_decode(
+            file_get_contents(__DIR__ . '/../../js/.vite/manifest.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $entry = $manifest['src/main.tsx'];
+        \OCP\Util::addScript('cloud_chess', pathinfo($entry['file'], PATHINFO_FILENAME));
+        $assetBase = $this->url->linkTo('cloud_chess', 'js/');
 
         return new TemplateResponse('cloud_chess', 'main', [
+            'styleUrls' => array_map(fn (string $file) => $assetBase . $file, $entry['css'] ?? []),
             'apiBase' => $this->url->linkToRoute('cloud_chess.page.index') . 'api',
         ]);
     }

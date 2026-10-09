@@ -10,7 +10,7 @@ Cloud Chess brings asynchronous PvP and browser-based games against Stockfish to
 - Shared PHP core with Domain, Application and Ports; platform adapters call its use cases directly in PHP.
 - No API Platform or separate HTTP API package is planned for the current scope.
 - Nextcloud provides host integration; storage, notifications, and chess rules are adapters.
-- React, TypeScript, Vite, and Tailwind in the client.
+- React, TypeScript, and Vite for the frontend inside the Nextcloud app.
 - Stockfish WASM runs in a browser Web Worker; the server still validates every move.
 - Test-first development and Docker-based tooling.
 
@@ -18,8 +18,7 @@ Cloud Chess brings asynchronous PvP and browser-based games against Stockfish to
 cloud-chess/
 ├── packages/chess-core/          # Domain, Application, Ports
 ├── packages/chess-rules-pchess/  # chess-rules adapter
-├── apps/nextcloud/               # first platform adapter
-├── clients/chess-client/         # React application
+├── apps/nextcloud/               # PHP adapter and React frontend
 └── docs/                         # architecture and decisions
 ```
 
