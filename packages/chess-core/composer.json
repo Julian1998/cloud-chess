@@ -1,6 +1,6 @@
 {
   "name": "cloud-chess/chess-core",
-  "description": "Portable application core for Cloud Chess.",
+  "description": "Portable application core for Chess.",
   "type": "library",
   "require": {
     "php": "^8.3"

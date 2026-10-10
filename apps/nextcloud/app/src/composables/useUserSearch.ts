@@ -1,5 +1,7 @@
+import { translate } from '../platform/i18n';
 import { ref, watch, type Ref } from 'vue';
-import type { ApiClient, User } from '../api';
+import type { ApiClient } from '../api';
+import type { User } from '../types/invitations';
 import { errorMessage } from '../lib/errors';
 
 export function useUserSearch(
@@ -30,7 +32,7 @@ export function useUserSearch(
             if (active) users.value = result.users;
           })
           .catch((failure: unknown) => {
-            if (active) error.value = errorMessage(failure);
+            if (active) error.value = translate(errorMessage(failure));
           })
           .finally(() => {
             if (active) searching.value = false;

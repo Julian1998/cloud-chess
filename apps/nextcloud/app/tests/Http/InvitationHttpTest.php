@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Tests\Http;
+namespace OCA\Chess\Tests\Http;
 
-use OCA\CloudChess\Tests\HttpClient;
+use OCA\Chess\Tests\HttpClient;
 use PHPUnit\Framework\TestCase;
 
 use function array_column;

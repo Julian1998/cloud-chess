@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Db;
+namespace OCA\Chess\Db;
 
 use CloudChess\Core\Domain\Aggregate\GameInvitation;
 use CloudChess\Core\Domain\Enum\ColorPreference;
@@ -12,7 +12,7 @@ use CloudChess\Core\Domain\ValueObject\GameInvitationId;
 use CloudChess\Core\Domain\ValueObject\PlayerId;
 use CloudChess\Core\Ports\GameInvitationRepository as GameInvitationRepository;
 use DateTimeImmutable;
-use OCA\CloudChess\Service\InvitationNotFound;
+use OCA\Chess\Service\InvitationNotFound;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 

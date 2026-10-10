@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Tests;
+namespace OCA\Chess\Tests;
 
 use CurlHandle;
 use RuntimeException;
@@ -50,7 +50,7 @@ final class HttpClient
             'password' => $password,
             'requesttoken' => $token,
         ]), ['Content-Type: application/x-www-form-urlencoded', 'Origin: ' . $this->base]);
-        $page = $this->send('/index.php/apps/cloud_chess/')[1];
+        $page = $this->send('/index.php/apps/chess/')[1];
         $this->token = $this->readToken($page, 'data-requesttoken');
     }
 
@@ -66,7 +66,7 @@ final class HttpClient
             }
         }
         [$status, $payload] = $this->send(
-            '/index.php/apps/cloud_chess/api' . $path,
+            '/index.php/apps/chess/api' . $path,
             $body === null ? null : json_encode($body, JSON_THROW_ON_ERROR),
             $headers,
         );

@@ -1,6 +1,6 @@
 <?php
 
-// Run with: php custom_apps/cloud_chess/tests/integration.php
+// Run with: php custom_apps/chess/tests/integration.php
 // Uses dedicated local test accounts only; no messages are sent to real users.
 declare(strict_types=1);
 use CloudChess\Core\Application\AcceptInvitation;
@@ -15,18 +15,22 @@ use CloudChess\Core\Domain\ValueObject\GameId;
 use CloudChess\Core\Domain\ValueObject\GameInvitationId;
 use CloudChess\Core\Domain\ValueObject\PlayerId;
 use CloudChess\Core\Ports\GameRepository as GameRepositoryPort;
-use OCA\CloudChess\Db\GameRepository;
-use OCA\CloudChess\Db\InvitationRepository;
-use OCA\CloudChess\Db\TransactionRunner;
-use OCA\CloudChess\Notification\Notifier;
-use OCA\CloudChess\Service\ColorAssigner;
-use OCA\CloudChess\Service\InvitationNotFound;
-use OCA\CloudChess\Service\InvitationService;
-use OCA\CloudChess\Service\SystemClock;
-use OCA\CloudChess\Service\UserDirectory;
+use OC\DB\SchemaWrapper;
+use OC\Migration\NullOutput;
+use OCA\Chess\Db\GameRepository;
+use OCA\Chess\Db\InvitationRepository;
+use OCA\Chess\Db\TransactionRunner;
+use OCA\Chess\Migration\Version000002Date20261010000000;
+use OCA\Chess\Notification\Notifier;
+use OCA\Chess\Service\ColorAssigner;
+use OCA\Chess\Service\InvitationNotFound;
+use OCA\Chess\Service\InvitationService;
+use OCA\Chess\Service\SystemClock;
+use OCA\Chess\Service\UserDirectory;
 use OCA\Notifications\Handler;
 use OCP\App\IAppManager;
 use OCP\IAppConfig;
+use OCP\IDBConnection;
 use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Notification\AlreadyProcessedException;
@@ -45,7 +49,7 @@ set_exception_handler(function (Throwable $e): never {
 });
 
 if (!class_exists(InvitationService::class)) {
-    fwrite(STDERR, "FAIL: Cloud Chess invitation service is not installed\n");
+    fwrite(STDERR, "FAIL: Chess invitation service is not installed\n");
     exit(1);
 }
 function check(bool $ok, string $message): void
@@ -74,10 +78,21 @@ try {
     $handler = Server::get(Handler::class);
     $storedNotice = $notificationManager
         ->createNotification()
-        ->setApp('cloud_chess')
+        ->setApp('chess')
         ->setUser($b)
         ->setObject('invitation', $sent['id']);
     check($handler->count($storedNotice) === 1, 'Notification not stored');
+    $db = Server::get(IDBConnection::class);
+    $query = $db->getQueryBuilder();
+    $query->update('notifications')
+        ->set('app', $query->createNamedParameter('cloud_chess'))
+        ->where($query->expr()->eq('object_id', $query->createNamedParameter($sent['id'])))
+        ->executeStatement();
+    $migration = new Version000002Date20261010000000($db);
+    $schema = new SchemaWrapper($db->getInner());
+    $migration->postSchemaChange(new NullOutput(), fn () => $schema, []);
+    $migration->postSchemaChange(new NullOutput(), fn () => $schema, []);
+    check($handler->count($storedNotice) === 1, 'Legacy notification not migrated idempotently');
     check($sent['status'] === 'pending', 'Invitation not pending');
     check(count($service->list($b)) === 1, 'Recipient cannot see invitation');
     check($service->list($c) === [], 'Third user sees invitation');
@@ -155,7 +170,7 @@ try {
     $manager = Server::get(IManager::class);
     $notice = $manager
         ->createNotification()
-        ->setApp('cloud_chess')
+        ->setApp('chess')
         ->setUser($b)
         ->setObject('invitation', $pending['id'])
         ->setSubject('invitation');

@@ -1,8 +1,8 @@
 import { ApiClient } from './api';
 
 export function getRootElement(): HTMLElement {
-  const rootElement = document.getElementById('cloud-chess-root');
-  if (!rootElement) throw new Error('Cloud-Chess-Wurzelelement fehlt.');
+  const rootElement = document.getElementById('app-root');
+  if (!rootElement) throw new Error('App-Wurzelelement fehlt.');
   return rootElement;
 }
 

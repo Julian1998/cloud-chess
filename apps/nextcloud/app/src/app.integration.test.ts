@@ -6,8 +6,10 @@ import {
   type VueWrapper,
 } from '@vue/test-utils';
 import { afterEach, expect, it, vi } from 'vitest';
-import { ApiClient, type Invitation } from './api';
+import { ApiClient } from './api';
+import type { Invitation } from './types/invitations';
 import App from './App.vue';
+import { createPinia } from 'pinia';
 import axios from '@nextcloud/axios';
 import { showSuccess } from '@nextcloud/dialogs';
 import { subscribe, unsubscribe } from '@nextcloud/event-bus';
@@ -30,7 +32,7 @@ vi.mock('@nextcloud/vue/components/NcAppNavigation', () => ({
   },
 }));
 vi.mock('@nextcloud/vue/components/NcAppContent', () => ({
-  default: { template: '<div><slot /></div>' },
+  default: { template: '<div data-testid="app-content"><slot /></div>' },
 }));
 vi.mock('@nextcloud/vue/components/NcAppNavigationItem', () => ({
   default: {
@@ -94,11 +96,12 @@ afterEach(() => {
   wrapper?.unmount();
   axios.defaults.adapter = originalAdapter;
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 function render() {
   wrapper = mount(App, {
     props: { api: new ApiClient('/api') },
-    global: { stubs: { teleport: true } },
+    global: { plugins: [createPinia()], stubs: { teleport: true } },
   });
   return wrapper;
 }
@@ -175,6 +178,7 @@ it('shows a recoverable fallback when rendering fails', async () => {
   wrapper = mount(App, {
     props: { api: new ApiClient('/api') },
     global: {
+      plugins: [createPinia()],
       stubs: {
         InvitationsPage: {
           setup() {
@@ -187,7 +191,7 @@ it('shows a recoverable fallback when rendering fails', async () => {
   });
   await flushPromises();
   expect(wrapper.find('[role="alert"]').text()).toContain(
-    'Cloud Chess konnte nicht geladen werden.',
+    'Die App konnte nicht geladen werden.',
   );
   expect(button('Seite neu laden').exists()).toBe(true);
 });
@@ -260,12 +264,12 @@ it('opens an existing game from the games view', async () => {
   render();
   await flushPromises();
   await button('Alle Partien').trigger('click');
-  await wrapper!.find('.cc-invitation-row a').trigger('click');
-  expect(wrapper!.findAll('.cc-invitation')).toHaveLength(1);
+  await wrapper!.find('.chess-invitation-row a').trigger('click');
+  expect(wrapper!.findAll('.chess-invitation')).toHaveLength(1);
   expect(wrapper!.find('[aria-label="Partieübersicht"] dl').text()).toContain(
     'WeißAliceSchwarzBob',
   );
-  expect(wrapper!.find('.cc-invitation-heading').text()).toContain(
+  expect(wrapper!.find('.chess-invitation-heading').text()).toContain(
     'Partie angelegt',
   );
 });
@@ -319,13 +323,13 @@ it('selects the newest incoming request and moves to the next after declining', 
   });
   render();
   await flushPromises();
-  expect(wrapper!.find('.cc-invitation h2').text()).toBe('Daniel');
+  expect(wrapper!.find('.chess-invitation h2').text()).toBe('Daniel');
   await button('Carla').trigger('click');
-  expect(wrapper!.find('.cc-invitation h2').text()).toBe('Carla');
+  expect(wrapper!.find('.chess-invitation h2').text()).toBe('Carla');
   await button('Daniel').trigger('click');
   await button('Ablehnen').trigger('click');
   await flushPromises();
-  expect(wrapper!.find('.cc-invitation h2').text()).toBe('Carla');
+  expect(wrapper!.find('.chess-invitation h2').text()).toBe('Carla');
   expect(wrapper!.find('nav').text()).not.toContain('Daniel');
 });
 
@@ -365,10 +369,36 @@ it('closes the native mobile navigation when choosing an incoming request', asyn
     await flushPromises();
     await button('Alice').trigger('click');
     expect(onToggle).toHaveBeenCalledWith({ open: false });
-    expect(wrapper!.find('.cc-invitation h2').text()).toBe('Alice');
+    expect(wrapper!.find('.chess-invitation h2').text()).toBe('Alice');
   } finally {
     unsubscribe('toggle-navigation', onToggle);
   }
+});
+
+it('keeps the shell navigation mounted while changing content without fetching again', async () => {
+  const requests = vi.fn(async () =>
+    Response.json({ userId: 'bob', invitations: [pending] }),
+  );
+  mockApi(requests);
+  render();
+  await flushPromises();
+  const navigation = wrapper!.find('nav').element;
+  const content = wrapper!.find('[data-testid="app-content"]');
+  expect(content.find('main').exists()).toBe(true);
+  expect(
+    content
+      .findAll('nav')
+      .every((nav) => nav.classes().includes('chess-invitation-tabs')),
+  ).toBe(true);
+  await button('Alle Partien').trigger('click');
+  await flushPromises();
+  expect(wrapper!.find('nav').element).toBe(navigation);
+  expect(content.find('h1').text()).toBe('Alle Partien');
+  await button('Einladungen').trigger('click');
+  await flushPromises();
+  expect(wrapper!.find('nav').element).toBe(navigation);
+  expect(wrapper!.findAll('[data-testid="app-content"]')).toHaveLength(1);
+  expect(requests).toHaveBeenCalledTimes(1);
 });
 
 it('groups received and sent invitations under the fixed invitations destination', async () => {
@@ -385,10 +415,10 @@ it('groups received and sent invitations under the fixed invitations destination
   render();
   await flushPromises();
   await button('Einladungen').trigger('click');
-  expect(wrapper!.find('.cc-invitation').exists()).toBe(false);
-  expect(wrapper!.find('.cc-invitation-row').text()).toContain('Alice');
+  expect(wrapper!.find('.chess-invitation').exists()).toBe(false);
+  expect(wrapper!.find('.chess-invitation-row').text()).toContain('Alice');
   await button('Gesendet').trigger('click');
-  expect(wrapper!.find('.cc-invitation-row').text()).toContain('Carla');
+  expect(wrapper!.find('.chess-invitation-row').text()).toContain('Carla');
   expect(wrapper!.find('nav').text()).not.toContain('Gesendete Einladungen');
 });
 
@@ -400,6 +430,46 @@ it('opens native app settings and updates the flat request list', async () => {
   expect(wrapper!.find('[role="dialog"]').exists()).toBe(true);
   const checkbox = wrapper!.find('input[type="checkbox"]');
   await checkbox.setValue(false);
-  expect(wrapper!.find('#cc-open-requests').isVisible()).toBe(false);
-  expect(localStorage.getItem('cloud-chess:bob:inbox-open')).toBe('false');
+  expect(wrapper!.find('#chess-open-requests').isVisible()).toBe(false);
+  expect(localStorage.getItem('chess:bob:inbox-open')).toBe('false');
+});
+
+it('migrates the existing sidebar preference without overwriting a new preference', async () => {
+  localStorage.setItem('cloud-chess:bob:inbox-open', 'false');
+  mockApi(async () => Response.json({ userId: 'bob', invitations: [pending] }));
+  render();
+  await flushPromises();
+  expect(wrapper!.find('#chess-open-requests').isVisible()).toBe(false);
+  expect(localStorage.getItem('chess:bob:inbox-open')).toBe('false');
+  expect(localStorage.getItem('cloud-chess:bob:inbox-open')).toBeNull();
+  wrapper!.unmount();
+  localStorage.setItem('chess:bob:inbox-open', 'true');
+  localStorage.setItem('cloud-chess:bob:inbox-open', 'false');
+  render();
+  await flushPromises();
+  expect(wrapper!.find('#chess-open-requests').isVisible()).toBe(true);
+  expect(localStorage.getItem('chess:bob:inbox-open')).toBe('true');
+  expect(localStorage.getItem('cloud-chess:bob:inbox-open')).toBeNull();
+});
+
+it('polls centrally every 20 seconds and stops when the shell unmounts', async () => {
+  vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+  const requests = vi.fn(async () =>
+    Response.json({ userId: 'bob', invitations: [pending] }),
+  );
+  mockApi(requests);
+  render();
+  await flushPromises();
+  expect(requests).toHaveBeenCalledTimes(1);
+  await vi.advanceTimersByTimeAsync(19_999);
+  expect(requests).toHaveBeenCalledTimes(1);
+  await vi.advanceTimersByTimeAsync(1);
+  expect(requests).toHaveBeenCalledTimes(2);
+  await button('Alle Partien').trigger('click');
+  await vi.advanceTimersByTimeAsync(20_000);
+  expect(requests).toHaveBeenCalledTimes(3);
+  wrapper!.unmount();
+  wrapper = undefined;
+  await vi.advanceTimersByTimeAsync(40_000);
+  expect(requests).toHaveBeenCalledTimes(3);
 });

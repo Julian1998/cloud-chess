@@ -1,23 +1,17 @@
 <script setup lang="ts">
-import { t } from '@nextcloud/l10n';
+import type { UserSearchProps, UserSearchEvents } from '../../types/components';
+import { translate } from '../../platform/i18n';
 import { computed, toRef, useId } from 'vue';
 import NcSelectUsers, {
   type NcSelectUsersModel,
 } from '@nextcloud/vue/components/NcSelectUsers';
 import NcNoteCard from '@nextcloud/vue/components/NcNoteCard';
-import type { ApiClient, User } from '../api';
-import { useUserSearch } from '../composables/useUserSearch';
+import type { ApiClient } from '../../api';
+import type { User } from '../../types/invitations';
+import { useUserSearch } from '../../composables/useUserSearch';
 
-const props = defineProps<{
-  api: ApiClient;
-  query: string;
-  selectedUser: User | null;
-  disabled: boolean;
-}>();
-const emit = defineEmits<{
-  'update:query': [value: string];
-  select: [user: User | null];
-}>();
+const props = defineProps<UserSearchProps>();
+const emit = defineEmits<UserSearchEvents>();
 const searchId = useId();
 const { users, searching, error } = useUserSearch(
   props.api,
@@ -51,36 +45,56 @@ function search(value: string) {
 </script>
 
 <template>
-  <div class="cc-user-search">
+  <div class="chess-user-search">
     <NcSelectUsers
       :input-id="searchId"
-      :input-label="t('cloud_chess', 'Search players')"
+      :input-label="translate('Search players')"
       :model-value="selected"
       :options="options"
       :filterable="false"
       :loading="searching"
       :disabled="disabled"
-      :placeholder="t('cloud_chess', 'Name or username')"
+      :placeholder="translate('Name or username')"
       :aria-describedby="`${searchId}-hint`"
       @search="search"
       @update:model-value="select"
     />
-    <p :id="`${searchId}-hint`" class="cc-field-hint" aria-live="polite">
+    <p :id="`${searchId}-hint`" class="chess-field-hint" aria-live="polite">
       {{
         selectedUser
-          ? t('cloud_chess', '{player} selected', {
+          ? translate('{player} selected', {
               player: selectedUser.displayName,
             })
           : searching
-            ? t('cloud_chess', 'Searching …')
+            ? translate('Searching …')
             : !selectedUser &&
                 query.trim().length >= 2 &&
                 !users.length &&
                 !error
-              ? t('cloud_chess', 'No players found.')
-              : t('cloud_chess', 'Enter at least two characters.')
+              ? translate('No players found.')
+              : translate('Enter at least two characters.')
       }}
     </p>
     <NcNoteCard v-if="error" type="error" show-alert :text="error" />
   </div>
 </template>
+
+<style>
+.chess-field-hint {
+  color: var(--color-text-maxcontrast);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.chess-user-search {
+  min-width: 0;
+}
+
+.chess-user-search .nc-select-users {
+  width: 100%;
+}
+
+.chess-field-hint {
+  margin: 8px 0 0;
+}
+</style>

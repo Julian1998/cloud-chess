@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-  <id>cloud_chess</id><name>Cloud Chess</name><summary>Korrespondenzschach mit deinen Cloud-Kontakten</summary>
+  <id>chess</id><name>Chess</name><summary>Korrespondenzschach mit deinen Cloud-Kontakten</summary>
   <description>Schacheinladungen senden, annehmen und ablehnen. Angenommene Einladungen starten eine Partie; das Schachbrett folgt im nächsten Schritt.</description>
-  <version>0.1.0</version><licence>agpl</licence><author>Cloud Chess contributors</author>
-  <namespace>CloudChess</namespace><category>games</category>
+  <version>0.1.0</version><licence>agpl</licence><author>Chess contributors</author>
+  <namespace>Chess</namespace><category>games</category>
   <dependencies><php min-version="8.3"/><nextcloud min-version="34" max-version="34"/></dependencies>
-  <navigations><navigation><name>Cloud Chess</name><route>cloud_chess.page.index</route><icon>app.svg</icon><order>20</order></navigation></navigations>
+  <navigations><navigation><name>Chess</name><route>chess.page.index</route><icon>app.svg</icon><order>20</order></navigation></navigations>
 </info>

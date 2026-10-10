@@ -1,6 +1,6 @@
-# Cloud Chess licensing
+# Chess licensing
 
-Cloud Chess uses package-level licenses. This document is the current licensing declaration; each package receives its complete license text when it is created.
+Chess uses package-level licenses. This document is the current licensing declaration; each package receives its complete license text when it is created.
 
 | Future package | License |
 | --- | --- |

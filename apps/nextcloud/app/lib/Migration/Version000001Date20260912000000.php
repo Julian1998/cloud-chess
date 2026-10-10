@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Migration;
+namespace OCA\Chess\Migration;
 
 use Closure;
 use OCP\DB\ISchemaWrapper;

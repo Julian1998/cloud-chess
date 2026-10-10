@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Service;
+namespace OCA\Chess\Service;
 
 use CloudChess\Core\Application\AcceptInvitation;
 use CloudChess\Core\Application\AcceptInvitationCommand;
@@ -17,10 +17,10 @@ use CloudChess\Core\Domain\ValueObject\GameId;
 use CloudChess\Core\Domain\ValueObject\GameInvitationId;
 use CloudChess\Core\Domain\ValueObject\PlayerId;
 use InvalidArgumentException;
-use OCA\CloudChess\Db\GameRepository;
-use OCA\CloudChess\Db\InvitationRepository;
-use OCA\CloudChess\Db\TransactionRunner;
-use OCA\CloudChess\Notification\InvitationNotifications;
+use OCA\Chess\Db\GameRepository;
+use OCA\Chess\Db\InvitationRepository;
+use OCA\Chess\Db\TransactionRunner;
+use OCA\Chess\Notification\InvitationNotifications;
 use OCP\IUserManager;
 
 use function array_map;

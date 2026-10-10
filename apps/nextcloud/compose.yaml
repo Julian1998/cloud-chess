@@ -38,7 +38,7 @@ services:
       NEXTCLOUD_TRUSTED_DOMAINS: localhost
     volumes:
       - nextcloud:/var/www/html
-      - ./app:/var/www/html/custom_apps/cloud_chess
+      - ./app:/var/www/html/custom_apps/chess
 
   web:
     image: nginx:alpine
@@ -48,7 +48,7 @@ services:
       - "127.0.0.1:8080:80"
     volumes:
       - nextcloud:/var/www/html:ro
-      - ./app:/var/www/html/custom_apps/cloud_chess:ro
+      - ./app:/var/www/html/custom_apps/chess:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:

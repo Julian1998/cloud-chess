@@ -1,59 +1,18 @@
-import { t } from '@nextcloud/l10n';
+import { translate } from './platform/i18n';
 import axios, { isAxiosError } from '@nextcloud/axios';
 import { generateUrl } from '@nextcloud/router';
 
-export type ColorPreference = 'white' | 'black' | 'random';
-export type TurnDuration = 'P1D' | 'P2D';
-export type InvitationStatus =
-  'pending' | 'accepted' | 'declined' | 'cancelled' | 'expired';
-
-export type User = {
-  id: string;
-  displayName: string;
-};
-
-export type Game = {
-  id: string;
-  whitePlayerId: string;
-  blackPlayerId: string;
-  turnDeadline: string;
-};
-
-export type Invitation = {
-  id: string;
-  challengerId: string;
-  challengerName: string;
-  opponentId: string;
-  opponentName: string;
-  colorPreference: ColorPreference;
-  turnDuration: TurnDuration;
-  status: InvitationStatus;
-  createdAt: string;
-  expiresAt: string;
-  game: Game | null;
-};
-
-export type InvitationList = {
-  userId: string;
-  invitations: Invitation[];
-};
-
-export type InvitationMutation = {
-  invitation: Invitation;
-  warning?: string;
-};
-
-export type CreateInvitation = {
-  opponentId: string;
-  opponentSearch?: string;
-  colorPreference: ColorPreference;
-  turnDuration: TurnDuration;
-};
+import type {
+  InvitationList,
+  InvitationMutation,
+  CreateInvitation,
+  User,
+} from './types/invitations';
 
 export class ApiClient {
   private readonly apiBase: string;
 
-  public constructor(apiBase = generateUrl('/apps/cloud_chess/api')) {
+  public constructor(apiBase = generateUrl('/apps/chess/api')) {
     this.apiBase = apiBase.replace(/\/$/, '');
   }
 
@@ -93,13 +52,13 @@ export class ApiClient {
           'error' in payload &&
           typeof payload.error === 'string'
             ? payload.error
-            : t('cloud_chess', 'The request failed ({status}).', {
+            : translate('The request failed ({status}).', {
                 status: failure.response.status,
               });
         throw new Error(message);
       }
       throw new Error(
-        t('cloud_chess', 'The server is unreachable. Please try again.'),
+        translate('The server is unreachable. Please try again.'),
       );
     }
   }

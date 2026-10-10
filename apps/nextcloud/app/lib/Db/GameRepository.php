@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Db;
+namespace OCA\Chess\Db;
 
 use CloudChess\Core\Domain\Aggregate\Game;
 use CloudChess\Core\Ports\GameRepository as GameRepositoryPort;

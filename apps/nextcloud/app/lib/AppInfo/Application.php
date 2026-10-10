@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\AppInfo;
+namespace OCA\Chess\AppInfo;
 
-use OCA\CloudChess\Notification\Notifier;
+use OCA\Chess\Notification\Notifier;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
@@ -16,7 +16,7 @@ final class Application extends App implements IBootstrap
 {
     public function __construct(array $urlParams = [])
     {
-        parent::__construct('cloud_chess', $urlParams);
+        parent::__construct('chess', $urlParams);
     }
 
     public function register(IRegistrationContext $context): void
