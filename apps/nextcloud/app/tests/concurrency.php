@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use CloudChess\Core\Application\DuplicatePendingInvitation;
 use CloudChess\Core\Domain\Exception\InvitationStateException;
-use OCA\CloudChess\Service\InvitationService;
+use OCA\Chess\Service\InvitationService;
 use OCP\App\IAppManager;
 use OCP\IUserManager;
 use OCP\IUserSession;

@@ -1,6 +1,6 @@
 {
   "name": "cloud-chess/nextcloud",
-  "description": "Cloud Chess Nextcloud adapter",
+  "description": "Chess Nextcloud adapter",
   "type": "project",
   "license": "AGPL-3.0-or-later",
   "require": {
@@ -22,7 +22,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "OCA\\CloudChess\\": "lib/"
+      "OCA\\Chess\\": "lib/"
     }
   }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Controller;
+namespace OCA\Chess\Controller;
 
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
@@ -23,7 +23,7 @@ final class PageController extends Controller
 {
     public function __construct(IRequest $request, private IURLGenerator $url)
     {
-        parent::__construct('cloud_chess', $request);
+        parent::__construct('chess', $request);
     }
 
     #[NoAdminRequired]
@@ -37,12 +37,12 @@ final class PageController extends Controller
             JSON_THROW_ON_ERROR,
         );
         $entry = $manifest['src/main.ts'];
-        Util::addScript('cloud_chess', pathinfo($entry['file'], PATHINFO_FILENAME));
-        $assetBase = $this->url->linkTo('cloud_chess', 'js/');
+        Util::addScript('chess', pathinfo($entry['file'], PATHINFO_FILENAME));
+        $assetBase = $this->url->linkTo('chess', 'js/');
         $visited = [];
         $styles = $this->styleFiles($manifest, 'src/main.ts', $visited);
 
-        return new TemplateResponse('cloud_chess', 'main', [
+        return new TemplateResponse('chess', 'main', [
             'styleUrls' => array_map(fn (string $file) => $assetBase . $file, $styles),
         ]);
     }

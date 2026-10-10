@@ -34,7 +34,7 @@ describe('ApiClient', () => {
     }));
     axios.defaults.adapter = adapter;
     const result = await new ApiClient(
-      '/index.php/apps/cloud_chess/api',
+      '/index.php/apps/chess/api',
     ).createInvitation({
       opponentId: 'bob',
       colorPreference: 'white',
@@ -42,7 +42,7 @@ describe('ApiClient', () => {
     });
     expect(result.invitation.id).toBe('invite-1');
     const config = adapter.mock.calls[0][0];
-    expect(config.url).toBe('/index.php/apps/cloud_chess/api/invitations');
+    expect(config.url).toBe('/index.php/apps/chess/api/invitations');
     expect(config.method).toBe('post');
     expect(config.headers.get('requesttoken')).toBe('csrf-token');
     expect(config.headers.get('Content-Type')).toBe('application/json');

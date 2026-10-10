@@ -11,7 +11,7 @@ export default defineConfig({
   base: './',
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),
-    appName: JSON.stringify('cloud_chess'),
+    appName: JSON.stringify('chess'),
     appVersion: JSON.stringify(packageJson.version),
   },
   build: {

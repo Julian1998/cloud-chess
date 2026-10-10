@@ -1,5 +1,9 @@
-import { t, getCanonicalLocale } from '@nextcloud/l10n';
-import type { ColorPreference, Invitation, TurnDuration } from '../api';
+import { translate } from '../platform/i18n';
+import type {
+  ColorPreference,
+  Invitation,
+  TurnDuration,
+} from '../types/invitations';
 
 export function splitInvitations(invitations: Invitation[], userId: string) {
   return {
@@ -32,28 +36,18 @@ export function playerColor(
 }
 
 export const colorLabels: Record<ColorPreference, string> = {
-  white: t('cloud_chess', 'White'),
-  black: t('cloud_chess', 'Black'),
-  random: t('cloud_chess', 'Randomly assigned'),
+  white: translate('White'),
+  black: translate('Black'),
+  random: translate('Randomly assigned'),
 };
 export const durationLabels: Record<TurnDuration, string> = {
-  P1D: t('cloud_chess', '1 day per move'),
-  P2D: t('cloud_chess', '2 days per move'),
+  P1D: translate('1 day per move'),
+  P2D: translate('2 days per move'),
 };
 export const statusLabels: Record<Invitation['status'], string> = {
-  pending: t('cloud_chess', 'Awaiting reply'),
-  accepted: t('cloud_chess', 'Accepted'),
-  declined: t('cloud_chess', 'Declined'),
-  cancelled: t('cloud_chess', 'Cancelled'),
-  expired: t('cloud_chess', 'Expired'),
+  pending: translate('Awaiting reply'),
+  accepted: translate('Accepted'),
+  declined: translate('Declined'),
+  cancelled: translate('Cancelled'),
+  expired: translate('Expired'),
 };
-
-export function formatDate(value: string) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? value
-    : new Intl.DateTimeFormat(getCanonicalLocale(), {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      }).format(date);
-}

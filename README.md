@@ -1,8 +1,8 @@
-# Cloud Chess
+# Chess
 
 > Open-source correspondence chess for Nextcloud, built on a portable PHP core for future self-hosted platform adapters.
 
-Cloud Chess brings asynchronous PvP and browser-based games against Stockfish to self-hosted collaboration platforms. Nextcloud is the first host; ownCloud Infinite Scale is a later adapter.
+Chess brings asynchronous PvP and browser-based games against Stockfish to self-hosted collaboration platforms. Nextcloud is the first host; ownCloud Infinite Scale is a later adapter.
 
 ## Principles
 
@@ -34,7 +34,7 @@ docker compose run --rm php composer analyse
 
 `packages/chess-core` owns `Domain`, `Application` and `Ports`. Nextcloud controllers call core use cases directly in-process; there is no HTTP connection between Nextcloud and the core. Concrete platform and technology adapters stay outside the package. A separate HTTP API package is deferred unless a concrete consumer requires it.
 
-Build and install the local Nextcloud app with `make nextcloud-install` after creating `apps/nextcloud/.env` from its example. Open <http://localhost:8080/index.php/apps/cloud_chess/>. Run `make nextcloud-test` for database/notification integration and concurrency checks, and `make client-check` for frontend checks.
+Build and install the local Nextcloud app with `make nextcloud-install` after creating `apps/nextcloud/.env` from its example. Open <http://localhost:8080/index.php/apps/chess/>. Run `make nextcloud-test` for database/notification integration and concurrency checks, and `make client-check` for frontend checks.
 
 The local Nextcloud FPM, Nginx, MariaDB, and adapter-workspace stack is documented in [apps/nextcloud/README.md](apps/nextcloud/README.md).
 
@@ -42,7 +42,7 @@ Use `make format` to format PHP, TypeScript and CSS; `make format-check` verifie
 
 ## Contributing
 
-The first Nextcloud milestone is implemented: multiple users can send invitations and accept or decline them in Cloud Chess or through native Nextcloud notifications. Invitations and newly created game records persist in the database. A playable chessboard is the next milestone. Contributions should be focused and test-first. Keep the Domain, Application, and Ports free of platform imports; Neither `chess-core` nor the Nextcloud adapter uses API Platform; introducing a separate API package requires a concrete use case. Discuss public API, domain, or dependency changes before starting an implementation.
+The first Nextcloud milestone is implemented: multiple users can send invitations and accept or decline them in Chess or through native Nextcloud notifications. Invitations and newly created game records persist in the database. A playable chessboard is the next milestone. Contributions should be focused and test-first. Keep the Domain, Application, and Ports free of platform imports; Neither `chess-core` nor the Nextcloud adapter uses API Platform; introducing a separate API package requires a concrete use case. Discuss public API, domain, or dependency changes before starting an implementation.
 
 ## Licensing
 

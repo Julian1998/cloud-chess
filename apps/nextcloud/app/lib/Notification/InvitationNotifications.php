@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Notification;
+namespace OCA\Chess\Notification;
 
 use CloudChess\Core\Domain\Aggregate\GameInvitation;
 use DateTime;
@@ -25,7 +25,7 @@ final class InvitationNotifications
         try {
             $notification = $this->manager
                 ->createNotification()
-                ->setApp('cloud_chess')
+                ->setApp('chess')
                 ->setObject('invitation', $invitation->id()->toString())
                 ->setUser($invitation->opponentId()->toString());
 
@@ -45,7 +45,7 @@ final class InvitationNotifications
                         ->createAction()
                         ->setLabel($label)
                         ->setLink(
-                            $this->url->linkToRouteAbsolute('cloud_chess.invitation.' . $label, [
+                            $this->url->linkToRouteAbsolute('chess.invitation.' . $label, [
                                 'id' => $invitation->id()->toString(),
                             ]),
                             'POST',
@@ -57,12 +57,12 @@ final class InvitationNotifications
 
             return null;
         } catch (Throwable $exception) {
-            $this->logger->error('Cloud Chess notification failed after invitation commit', [
-                'app' => 'cloud_chess',
+            $this->logger->error('Chess notification failed after invitation commit', [
+                'app' => 'chess',
                 'exception' => $exception,
             ]);
 
-            return 'Gespeichert, aber die Nextcloud-Benachrichtigung konnte nicht aktualisiert werden. Die Einladung ist in Cloud Chess verfügbar.';
+            return 'Gespeichert, aber die Nextcloud-Benachrichtigung konnte nicht aktualisiert werden. Die Einladung ist in der App verfügbar.';
         }
     }
 }

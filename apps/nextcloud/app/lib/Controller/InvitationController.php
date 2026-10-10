@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Controller;
+namespace OCA\Chess\Controller;
 
 use Closure;
 use CloudChess\Core\Application\DuplicatePendingInvitation;
 use CloudChess\Core\Domain\Exception\InvitationStateException;
 use InvalidArgumentException;
-use OCA\CloudChess\Service\InvitationNotFound;
-use OCA\CloudChess\Service\InvitationService;
-use OCA\CloudChess\Service\UserDirectory;
+use OCA\Chess\Service\InvitationNotFound;
+use OCA\Chess\Service\InvitationService;
+use OCA\Chess\Service\UserDirectory;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
@@ -29,7 +29,7 @@ final class InvitationController extends Controller
         private UserDirectory $directory,
         private LoggerInterface $logger,
     ) {
-        parent::__construct('cloud_chess', $request);
+        parent::__construct('chess', $request);
     }
 
     private function actor(): string
@@ -97,7 +97,7 @@ final class InvitationController extends Controller
         } catch (InvalidArgumentException $exception) {
             return new JSONResponse(['error' => $exception->getMessage()], 400);
         } catch (Throwable $exception) {
-            $this->logger->error('Cloud Chess request failed', ['app' => 'cloud_chess', 'exception' => $exception]);
+            $this->logger->error('Chess request failed', ['app' => 'chess', 'exception' => $exception]);
 
             return new JSONResponse(
                 ['error' => 'Die Aktion konnte nicht gespeichert werden. Bitte erneut versuchen.'],

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Invitation } from '../api';
+import type { Invitation } from '../types/invitations';
 import { splitInvitations, playerColor } from './invitations';
 
 const baseInvitation: Invitation = {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Notification;
+namespace OCA\Chess\Notification;
 
 use CloudChess\Core\Domain\ValueObject\GameInvitationId;
-use OCA\CloudChess\Db\InvitationRepository;
-use OCA\CloudChess\Service\InvitationNotFound;
-use OCA\CloudChess\Service\SystemClock;
+use OCA\Chess\Db\InvitationRepository;
+use OCA\Chess\Service\InvitationNotFound;
+use OCA\Chess\Service\SystemClock;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\L10N\IFactory;
@@ -31,18 +31,18 @@ final class Notifier implements INotifier
 
     public function getID(): string
     {
-        return 'cloud_chess';
+        return 'chess';
     }
 
     public function getName(): string
     {
-        return 'Cloud Chess';
+        return 'Chess';
     }
 
     public function prepare(INotification $notification, string $languageCode): INotification
     {
         if (
-            $notification->getApp() !== 'cloud_chess' ||
+            $notification->getApp() !== 'chess' ||
             $notification->getSubject() !== 'invitation' ||
             $notification->getObjectType() !== 'invitation'
         ) {
@@ -66,15 +66,15 @@ final class Notifier implements INotifier
             throw new AlreadyProcessedException();
         }
 
-        $translations = $this->l10n->get('cloud_chess', $languageCode);
+        $translations = $this->l10n->get('chess', $languageCode);
         $challenger = $invitation->challengerId()->toString();
         $name = $this->users->get($challenger)?->getDisplayName() ?? $challenger;
 
         $notification
             ->setParsedSubject($translations->t('%s lädt dich zu einer Schachpartie ein', [$name]))
-            ->setParsedMessage($translations->t('Öffne Cloud Chess für Farbe, Zugfrist und alle Einladungen.'))
-            ->setLink($this->url->linkToRouteAbsolute('cloud_chess.page.index'))
-            ->setIcon($this->url->getAbsoluteURL($this->url->imagePath('cloud_chess', 'app.svg')));
+            ->setParsedMessage($translations->t('Öffne die App für Farbe, Zugfrist und alle Einladungen.'))
+            ->setLink($this->url->linkToRouteAbsolute('chess.page.index'))
+            ->setIcon($this->url->getAbsoluteURL($this->url->imagePath('chess', 'app.svg')));
 
         foreach ($notification->getActions() as $action) {
             if (!in_array($action->getLabel(), ['accept', 'decline'], true)) {
@@ -87,7 +87,7 @@ final class Notifier implements INotifier
                 ->setParsedLabel($translations->t($accept ? 'Annehmen' : 'Ablehnen'))
                 ->setPrimary($accept)
                 ->setLink(
-                    $this->url->linkToRouteAbsolute('cloud_chess.invitation.' . ($accept ? 'accept' : 'decline'), [
+                    $this->url->linkToRouteAbsolute('chess.invitation.' . ($accept ? 'accept' : 'decline'), [
                         'id' => $invitation->id()->toString(),
                     ]),
                     'POST',

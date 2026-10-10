@@ -13,9 +13,9 @@ it('keeps the Nextcloud subdirectory and index.php prefix in API URLs', async ()
     .mockResolvedValue({ data: { userId: 'bob', invitations: [] } });
   await getApiClient().listInvitations();
   expect(get).toHaveBeenCalledWith(
-    '/nextcloud/index.php/apps/cloud_chess/api/invitations',
+    '/nextcloud/index.php/apps/chess/api/invitations',
   );
 });
 it('fails clearly when the mount element is missing', () => {
-  expect(() => getRootElement()).toThrow('Cloud-Chess-Wurzelelement fehlt.');
+  expect(() => getRootElement()).toThrow('App-Wurzelelement fehlt.');
 });

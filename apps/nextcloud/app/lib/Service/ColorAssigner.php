@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Service;
+namespace OCA\Chess\Service;
 
 use CloudChess\Core\Domain\Enum\ColorPreference;
 use CloudChess\Core\Domain\ValueObject\PlayerAssignment;

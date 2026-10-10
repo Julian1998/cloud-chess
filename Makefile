@@ -37,19 +37,19 @@ nextcloud-build: client-build
 	$(NEXTCLOUD_COMPOSE) run --rm --no-deps workspace composer reinstall cloud-chess/chess-core --no-interaction
 
 nextcloud-install: nextcloud-up nextcloud-build
-	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php occ app:enable cloud_chess
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php occ app:enable chess
 
 nextcloud-test:
-	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/cloud_chess/tests/integration.php
-	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/cloud_chess/tests/concurrency.php
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/chess/tests/integration.php
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data app php custom_apps/chess/tests/concurrency.php
 
 nextcloud-test-http:
 	$(NEXTCLOUD_COMPOSE) run --rm --no-deps workspace composer install --no-interaction
-	$(NEXTCLOUD_COMPOSE) exec -T -u www-data -e CLOUD_CHESS_DEMO_PASSWORD -e CLOUD_CHESS_HTTP_CONNECT_TO=localhost:8080:web:80 app php custom_apps/cloud_chess/vendor/bin/phpunit --configuration custom_apps/cloud_chess/tests/phpunit-http.xml
+	$(NEXTCLOUD_COMPOSE) exec -T -u www-data -e CLOUD_CHESS_DEMO_PASSWORD -e CLOUD_CHESS_HTTP_CONNECT_TO=localhost:8080:web:80 app php custom_apps/chess/vendor/bin/phpunit --configuration custom_apps/chess/tests/phpunit-http.xml
 
 nextcloud-package: nextcloud-build
 	mkdir -p build
-	tar --exclude='./src' --exclude='./node_modules' --exclude='./package.json' --exclude='./pnpm-lock.yaml' --exclude='./pnpm-workspace.yaml' --exclude='./tsconfig.json' --exclude='./vite.config.ts' --exclude='./tests' --exclude='./vendor/cloud-chess/chess-core/vendor' --exclude='./vendor/cloud-chess/chess-core/tests' --exclude='./vendor/cloud-chess/chess-core/.phpunit*' --exclude='./.gitkeep' --exclude='./.gitignore' --transform='s,^\.,cloud_chess,' -czf build/cloud_chess.tar.gz -C apps/nextcloud/app .
+	tar --exclude='./src' --exclude='./node_modules' --exclude='./package.json' --exclude='./pnpm-lock.yaml' --exclude='./pnpm-workspace.yaml' --exclude='./tsconfig.json' --exclude='./vite.config.ts' --exclude='./tests' --exclude='./vendor/cloud-chess/chess-core/vendor' --exclude='./vendor/cloud-chess/chess-core/tests' --exclude='./vendor/cloud-chess/chess-core/.phpunit*' --exclude='./.gitkeep' --exclude='./.gitignore' --transform='s,^\.,chess,' -czf build/chess.tar.gz -C apps/nextcloud/app .
 
 .PHONY: format format-check
 

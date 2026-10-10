@@ -4,7 +4,7 @@ Verified on 2026-10-09, continuing the implementation begun on 2026-09-12.
 
 ## Working milestone
 
-Cloud Chess 0.1.0 is enabled in the local Nextcloud 34.0.4 instance. Signed-in users can search permitted Nextcloud users, send invitations, view sent/received lists, and accept or decline from both the app and native Nextcloud notifications. Both action surfaces call the same application use cases. The Vue frontend uses official Nextcloud components. Its sidebar groups actions required, outgoing invitations and ongoing games, with a new-game invitation modal. Invitation and game records persist in MariaDB.
+Chess 0.1.0 is enabled in the local Nextcloud 34.0.4 instance. Signed-in users can search permitted Nextcloud users, send invitations, view sent/received lists, and accept or decline from both the app and native Nextcloud notifications. Both action surfaces call the same application use cases. The Vue frontend uses official Nextcloud components. Its sidebar groups actions required, outgoing invitations and ongoing games, with a new-game invitation modal. Invitation and game records persist in MariaDB.
 
 The core includes create, accept and decline use cases, invitation restoration and creation timestamps. Domain cancellation remains available without a cancellation UI. Nextcloud adapters supply repositories, transactions, clock and server-side color assignment. Accepted game IDs equal the originating invitation IDs, enforcing one game per invitation through the game primary key. Pair locks serialize creation and response operations.
 
@@ -17,7 +17,7 @@ Notifications are published after commit and removed after resolution. Obsolete/
 - Real Nextcloud/MariaDB integration: creation, listing, duplicate rejection, third-user isolation, acceptance/replay, decline, restoration, forced rollback, expiry, restricted user discovery and notification persistence/removal.
 - Concurrent create and accept requests each commit once; the competing request receives a conflict.
 - HTTP checks: real login, CSRF rejection, invalid inputs, actor spoofing rejection, foreign-user denial, duplicate/replayed actions.
-- Browser checks: sending through the app, acceptance and decline through native notifications, acceptance and decline inside Cloud Chess; resolved state and game summary persist after refreshing. Previously stored September records survived the container restart in October.
+- Browser checks: sending through the app, acceptance and decline through native notifications, acceptance and decline inside Chess; resolved state and game summary persist after refreshing. Previously stored September records survived the container restart in October.
 - Test scripts have CLI-only guards and are excluded from the distributable app archive.
 
 ## Confirmed architecture

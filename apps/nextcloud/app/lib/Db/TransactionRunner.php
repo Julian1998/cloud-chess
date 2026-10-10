@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OCA\CloudChess\Db;
+namespace OCA\Chess\Db;
 
 use Closure;
 use CloudChess\Core\Ports\TransactionRunner as TransactionRunnerPort;
