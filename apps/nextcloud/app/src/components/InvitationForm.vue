@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { t } from '@nextcloud/l10n';
 import { ref } from 'vue';
+import NcDialog from '@nextcloud/vue/components/NcDialog';
 import NcButton from '@nextcloud/vue/components/NcButton';
+import NcRadioGroup from '@nextcloud/vue/components/NcRadioGroup';
+import NcRadioGroupButton from '@nextcloud/vue/components/NcRadioGroupButton';
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard';
+import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon';
 import type {
   ApiClient,
   ColorPreference,
@@ -14,49 +19,30 @@ import UserSearch from './UserSearch.vue';
 const props = defineProps<{
   api: ApiClient;
   onCreate: (data: CreateInvitation) => Promise<boolean>;
+  error: string | null;
 }>();
+const emit = defineEmits<{ close: [] }>();
+const open = ref(true);
 const query = ref('');
 const selectedUser = ref<User | null>(null);
 const selectedSearch = ref('');
 const colorPreference = ref<ColorPreference>('random');
 const turnDuration = ref<TurnDuration>('P1D');
 const submitting = ref(false);
-const colors = [
-  ['white', '○', t('cloud_chess', 'White')],
-  ['random', '◐', t('cloud_chess', 'Random')],
-  ['black', '●', t('cloud_chess', 'Black')],
-] as const;
-const durations = [
-  ['P1D', t('cloud_chess', '1 day')],
-  ['P2D', t('cloud_chess', '2 days')],
-] as const;
-
-function select(user: User) {
-  selectedSearch.value = query.value.trim();
+function select(user: User | null) {
+  if (user) selectedSearch.value = query.value.trim();
   selectedUser.value = user;
-  query.value = user.displayName;
 }
-
-function change(value: string) {
-  query.value = value;
-  selectedUser.value = null;
-}
-
 async function submit() {
   if (!selectedUser.value || submitting.value) return;
   submitting.value = true;
   try {
-    const created = await props.onCreate({
+    await props.onCreate({
       opponentId: selectedUser.value.id,
       opponentSearch: selectedSearch.value,
       colorPreference: colorPreference.value,
       turnDuration: turnDuration.value,
     });
-    if (created) {
-      query.value = '';
-      selectedUser.value = null;
-      selectedSearch.value = '';
-    }
   } finally {
     submitting.value = false;
   }
@@ -64,61 +50,80 @@ async function submit() {
 </script>
 
 <template>
-  <section class="cc-panel cc-compose" aria-labelledby="cc-compose-title">
-    <div class="cc-panel__heading">
-      <span class="cc-panel__number" aria-hidden="true">01</span>
-      <div>
-        <h2 id="cc-compose-title">{{ t('cloud_chess', 'New invitation') }}</h2>
-        <p>{{ t('cloud_chess', 'Choose a player and time per move.') }}</p>
-      </div>
-    </div>
-    <form @submit.prevent="submit">
-      <UserSearch
-        :api="api"
-        :query="query"
-        :selected-user="selectedUser"
-        @update:query="change"
-        @select="select"
+  <NcDialog
+    v-model:open="open"
+    :name="t('cloud_chess', 'New game')"
+    size="small"
+    is-form
+    :no-close="submitting"
+    :close-on-click-outside="false"
+    content-classes="cc-compose"
+    @submit.prevent="submit"
+    @update:open="!$event && emit('close')"
+  >
+    <p class="cc-compose-description">
+      {{ t('cloud_chess', 'Choose a player and time per move.') }}
+    </p>
+    <UserSearch
+      :api="api"
+      :query="query"
+      :selected-user="selectedUser"
+      :disabled="submitting"
+      @update:query="query = $event"
+      @select="select"
+    />
+    <NcRadioGroup
+      v-model="turnDuration"
+      :label="t('cloud_chess', 'Time per move')"
+    >
+      <NcRadioGroupButton
+        value="P1D"
+        :label="t('cloud_chess', '1 day')"
+        :disabled="submitting"
       />
-      <fieldset class="cc-fieldset">
-        <legend>{{ t('cloud_chess', 'Your preferred color') }}</legend>
-        <div class="cc-segments">
-          <label v-for="[value, icon, label] in colors" :key="value">
-            <input
-              v-model="colorPreference"
-              type="radio"
-              name="color"
-              :value="value"
-            />
-            <span aria-hidden="true">{{ icon }}</span
-            >{{ label }}
-          </label>
-        </div>
-      </fieldset>
-      <fieldset class="cc-fieldset">
-        <legend>{{ t('cloud_chess', 'Time per move') }}</legend>
-        <div class="cc-segments cc-segments--two">
-          <label v-for="[value, label] in durations" :key="value">
-            <input
-              v-model="turnDuration"
-              type="radio"
-              name="duration"
-              :value="value"
-            />{{ label }}
-          </label>
-        </div>
-      </fieldset>
+      <NcRadioGroupButton
+        value="P2D"
+        :label="t('cloud_chess', '2 days')"
+        :disabled="submitting"
+      />
+    </NcRadioGroup>
+    <NcRadioGroup
+      v-model="colorPreference"
+      :label="t('cloud_chess', 'Your preferred color')"
+    >
+      <NcRadioGroupButton
+        value="random"
+        :label="t('cloud_chess', 'Random')"
+        :disabled="submitting"
+      />
+      <NcRadioGroupButton
+        value="white"
+        :label="t('cloud_chess', 'White')"
+        :disabled="submitting"
+      />
+      <NcRadioGroupButton
+        value="black"
+        :label="t('cloud_chess', 'Black')"
+        :disabled="submitting"
+      />
+    </NcRadioGroup>
+    <NcNoteCard v-if="error" type="error" show-alert :text="error" />
+    <template #actions>
+      <NcButton :disabled="submitting" @click="emit('close')">{{
+        t('cloud_chess', 'Cancel')
+      }}</NcButton>
       <NcButton
         type="submit"
         variant="primary"
         :disabled="!selectedUser || submitting"
       >
+        <template v-if="submitting" #icon><NcLoadingIcon /></template>
         {{
           submitting
             ? t('cloud_chess', 'Sending …')
             : t('cloud_chess', 'Send invitation')
         }}
       </NcButton>
-    </form>
-  </section>
+    </template>
+  </NcDialog>
 </template>

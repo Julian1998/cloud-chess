@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { t } from '@nextcloud/l10n';
-import { toRef, useId } from 'vue';
+import { computed, toRef, useId } from 'vue';
+import NcSelectUsers, {
+  type NcSelectUsersModel,
+} from '@nextcloud/vue/components/NcSelectUsers';
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard';
 import type { ApiClient, User } from '../api';
 import { useUserSearch } from '../composables/useUserSearch';
 
@@ -8,10 +12,11 @@ const props = defineProps<{
   api: ApiClient;
   query: string;
   selectedUser: User | null;
+  disabled: boolean;
 }>();
 const emit = defineEmits<{
   'update:query': [value: string];
-  select: [user: User];
+  select: [user: User | null];
 }>();
 const searchId = useId();
 const { users, searching, error } = useUserSearch(
@@ -19,70 +24,63 @@ const { users, searching, error } = useUserSearch(
   toRef(props, 'query'),
   toRef(props, 'selectedUser'),
 );
-
-function change(event: Event) {
-  emit('update:query', (event.target as HTMLInputElement).value);
+const options = computed(() =>
+  users.value.map((user) => ({ ...user, user: user.id, subname: user.id })),
+);
+const selected = computed(() =>
+  props.selectedUser
+    ? {
+        ...props.selectedUser,
+        user: props.selectedUser.id,
+        subname: props.selectedUser.id,
+      }
+    : undefined,
+);
+function select(value: NcSelectUsersModel | NcSelectUsersModel[] | undefined) {
+  emit(
+    'select',
+    value && !Array.isArray(value)
+      ? { id: value.id, displayName: value.displayName }
+      : null,
+  );
+}
+function search(value: string) {
+  // NcSelect clears its search on selection; retain the discovery term for server validation.
+  if (value.trim() || !props.selectedUser) emit('update:query', value);
 }
 </script>
 
 <template>
-  <div class="cc-field cc-user-search">
-    <label :for="searchId">{{ t('cloud_chess', 'Search players') }}</label>
-    <div class="cc-search-input">
-      <span aria-hidden="true">⌕</span>
-      <input
-        :id="searchId"
-        type="search"
-        :value="query"
-        autocomplete="off"
-        :placeholder="t('cloud_chess', 'Name or username')"
-        :aria-describedby="`${searchId}-hint`"
-        :aria-controls="`${searchId}-results`"
-        :aria-expanded="users.length > 0"
-        @input="change"
-      />
-    </div>
-    <small :id="`${searchId}-hint`">{{
-      t('cloud_chess', 'Enter at least two characters.')
-    }}</small>
-    <p v-if="searching" class="cc-search-state">
-      {{ t('cloud_chess', 'Searching …') }}
-    </p>
-    <p v-if="error" class="cc-search-state cc-search-state--error" role="alert">
-      {{ error }}
-    </p>
-    <p
-      v-if="
-        !searching &&
-        query.trim().length >= 2 &&
-        !users.length &&
-        !selectedUser &&
-        !error
-      "
-      class="cc-search-state"
-    >
-      {{ t('cloud_chess', 'No players found.') }}
-    </p>
-    <ul v-if="users.length" :id="`${searchId}-results`" class="cc-user-results">
-      <li v-for="user in users" :key="user.id">
-        <button type="button" @click="emit('select', user)">
-          <span class="cc-avatar" aria-hidden="true">{{
-            user.displayName.trim().slice(0, 1).toLocaleUpperCase()
-          }}</span>
-          <span
-            ><strong>{{ user.displayName }}</strong
-            ><small>{{ user.id }}</small></span
-          >
-        </button>
-      </li>
-    </ul>
-    <p v-if="selectedUser" class="cc-selected" role="status">
-      ✓
+  <div class="cc-user-search">
+    <NcSelectUsers
+      :input-id="searchId"
+      :input-label="t('cloud_chess', 'Search players')"
+      :model-value="selected"
+      :options="options"
+      :filterable="false"
+      :loading="searching"
+      :disabled="disabled"
+      :placeholder="t('cloud_chess', 'Name or username')"
+      :aria-describedby="`${searchId}-hint`"
+      @search="search"
+      @update:model-value="select"
+    />
+    <p :id="`${searchId}-hint`" class="cc-field-hint" aria-live="polite">
       {{
-        t('cloud_chess', '{player} selected', {
-          player: selectedUser.displayName,
-        })
+        selectedUser
+          ? t('cloud_chess', '{player} selected', {
+              player: selectedUser.displayName,
+            })
+          : searching
+            ? t('cloud_chess', 'Searching …')
+            : !selectedUser &&
+                query.trim().length >= 2 &&
+                !users.length &&
+                !error
+              ? t('cloud_chess', 'No players found.')
+              : t('cloud_chess', 'Enter at least two characters.')
       }}
     </p>
+    <NcNoteCard v-if="error" type="error" show-alert :text="error" />
   </div>
 </template>

@@ -4,7 +4,10 @@ import packageJson from './package.json' with { type: 'json' };
 
 export default defineConfig({
   plugins: [vue()],
-  test: { setupFiles: ['./src/test-setup.ts'] },
+  test: {
+    setupFiles: ['./src/test-setup.ts'],
+    server: { deps: { inline: [/@nextcloud\/vue/] } },
+  },
   base: './',
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),
