@@ -1,8 +1,18 @@
 <script setup lang="ts">
-import { t, getCanonicalLocale } from '@nextcloud/l10n';
+import { t } from '@nextcloud/l10n';
 import { computed } from 'vue';
+import NcAvatar from '@nextcloud/vue/components/NcAvatar';
 import NcButton from '@nextcloud/vue/components/NcButton';
-import type { ColorPreference, Invitation, TurnDuration } from '../api';
+import NcNoteCard from '@nextcloud/vue/components/NcNoteCard';
+import NcLoadingIcon from '@nextcloud/vue/components/NcLoadingIcon';
+import type { Invitation } from '../api';
+import {
+  colorLabels,
+  durationLabels,
+  statusLabels,
+  playerColor,
+  formatDate,
+} from '../lib/invitations';
 
 const props = defineProps<{
   invitation: Invitation;
@@ -12,70 +22,56 @@ const props = defineProps<{
 const emit = defineEmits<{ accept: []; decline: [] }>();
 const otherPlayer = computed(() =>
   props.received
-    ? props.invitation.challengerName
-    : props.invitation.opponentName,
+    ? {
+        id: props.invitation.challengerId,
+        name: props.invitation.challengerName,
+      }
+    : { id: props.invitation.opponentId, name: props.invitation.opponentName },
 );
-const statusLabels: Record<Invitation['status'], string> = {
-  pending: t('cloud_chess', 'Pending'),
-  accepted: t('cloud_chess', 'Accepted'),
-  declined: t('cloud_chess', 'Declined'),
-  cancelled: t('cloud_chess', 'Cancelled'),
-  expired: t('cloud_chess', 'Expired'),
-};
-const colorLabels: Record<ColorPreference, string> = {
-  white: t('cloud_chess', 'White'),
-  black: t('cloud_chess', 'Black'),
-  random: t('cloud_chess', 'Randomly assigned'),
-};
-const durationLabels: Record<TurnDuration, string> = {
-  P1D: t('cloud_chess', '1 day per move'),
-  P2D: t('cloud_chess', '2 days per move'),
-};
-const dateTime = new Intl.DateTimeFormat(getCanonicalLocale(), {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-});
-
-function formatDate(value: string) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : dateTime.format(date);
-}
-
+const ownColor = computed(() =>
+  playerColor(
+    props.invitation,
+    props.received
+      ? props.invitation.opponentId
+      : props.invitation.challengerId,
+  ),
+);
 function playerName(id: string) {
-  if (id === props.invitation.challengerId)
-    return props.invitation.challengerName;
-  if (id === props.invitation.opponentId) return props.invitation.opponentName;
-  return id;
+  return id === props.invitation.challengerId
+    ? props.invitation.challengerName
+    : props.invitation.opponentName;
 }
 </script>
 
 <template>
   <article class="cc-invitation">
-    <div class="cc-invitation__heading">
+    <header class="cc-invitation-heading">
+      <NcAvatar
+        :user="otherPlayer.id"
+        :display-name="otherPlayer.name"
+        :size="56"
+        :disable-menu="true"
+        :disable-tooltip="true"
+      />
       <div>
-        <span class="cc-kicker">{{
-          received ? t('cloud_chess', 'From') : t('cloud_chess', 'To')
-        }}</span>
-        <h3>{{ otherPlayer }}</h3>
-      </div>
-      <span :class="['cc-status', `cc-status--${invitation.status}`]">{{
-        statusLabels[invitation.status]
-      }}</span>
-    </div>
-    <dl class="cc-details">
-      <div>
-        <dt>
+        <h2>{{ otherPlayer.name }}</h2>
+        <p>
           {{
-            received
-              ? t('cloud_chess', 'Opponent’s preferred color')
-              : t('cloud_chess', 'Your preferred color')
+            invitation.game
+              ? t('cloud_chess', 'Game created')
+              : statusLabels[invitation.status]
           }}
-        </dt>
-        <dd>{{ colorLabels[invitation.colorPreference] }}</dd>
+        </p>
       </div>
+    </header>
+    <dl class="cc-details">
       <div>
         <dt>{{ t('cloud_chess', 'Time per move') }}</dt>
         <dd>{{ durationLabels[invitation.turnDuration] }}</dd>
+      </div>
+      <div>
+        <dt>{{ t('cloud_chess', 'Your color') }}</dt>
+        <dd>{{ colorLabels[ownColor] }}</dd>
       </div>
       <div>
         <dt>{{ t('cloud_chess', 'Created') }}</dt>
@@ -91,39 +87,45 @@ function playerName(id: string) {
       class="cc-game"
       :aria-label="t('cloud_chess', 'Game summary')"
     >
-      <span class="cc-game__icon" aria-hidden="true">♞</span>
-      <div>
-        <strong>{{ t('cloud_chess', 'Game created') }}</strong>
-        <p>
-          {{
-            t('cloud_chess', 'White: {white} · Black: {black}', {
-              white: playerName(invitation.game.whitePlayerId),
-              black: playerName(invitation.game.blackPlayerId),
-            })
-          }}
-        </p>
-        <p>
-          {{
-            t('cloud_chess', 'First move deadline: {deadline}', {
-              deadline: formatDate(invitation.game.turnDeadline),
-            })
-          }}
-        </p>
-        <p>
-          {{
-            t(
-              'cloud_chess',
-              'The playable chessboard will follow in the next step.',
-            )
-          }}
-        </p>
-      </div>
+      <h3>{{ t('cloud_chess', 'Game summary') }}</h3>
+      <dl class="cc-details">
+        <div>
+          <dt>{{ t('cloud_chess', 'White') }}</dt>
+          <dd>{{ playerName(invitation.game.whitePlayerId) }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('cloud_chess', 'Black') }}</dt>
+          <dd>{{ playerName(invitation.game.blackPlayerId) }}</dd>
+        </div>
+      </dl>
+      <p>
+        {{
+          t('cloud_chess', 'First move deadline: {deadline}', {
+            deadline: formatDate(invitation.game.turnDeadline),
+          })
+        }}
+      </p>
+      <NcNoteCard
+        type="info"
+        :text="
+          t(
+            'cloud_chess',
+            'The playable chessboard will follow in the next step.',
+          )
+        "
+      />
     </section>
-    <div v-if="received && invitation.status === 'pending'" class="cc-actions">
-      <NcButton variant="primary" :disabled="busy" @click="emit('accept')">{{
-        busy ? t('cloud_chess', 'Processing …') : t('cloud_chess', 'Accept')
-      }}</NcButton>
-      <NcButton :disabled="busy" @click="emit('decline')">{{
+    <div
+      v-if="received && invitation.status === 'pending'"
+      class="cc-detail-actions"
+    >
+      <NcButton variant="primary" :disabled="busy" @click="emit('accept')">
+        <template v-if="busy" #icon><NcLoadingIcon /></template>
+        {{
+          busy ? t('cloud_chess', 'Processing …') : t('cloud_chess', 'Accept')
+        }}
+      </NcButton>
+      <NcButton variant="tertiary" :disabled="busy" @click="emit('decline')">{{
         t('cloud_chess', 'Decline')
       }}</NcButton>
     </div>
